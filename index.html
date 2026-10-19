@@ -3,304 +3,89 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0a0d12">
-<title>DYNO LAB — Engine Development</title>
+<meta name="theme-color" content="#0b1016">
+<title>APEX RUN — Low Poly Time Trial</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
-:root{--bg:#090c10;--panel:#11161d;--panel2:#151c24;--line:#27313c;--text:#edf2f7;--muted:#8794a3;--lime:#c7f36b;--cyan:#65d9e8;--orange:#ff9c61;--red:#ff626b}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1a2631 0,transparent 55%),var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:13px}button,select,input{font:inherit}button{cursor:pointer}header{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#090c10d9;position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:12px}.mark{width:36px;height:36px;border:1px solid var(--lime);display:grid;place-items:center;color:var(--lime);font-family:'IBM Plex Mono';font-weight:600;transform:skew(-7deg)}.brand strong{font-family:'Barlow Condensed';font-size:23px;letter-spacing:2px}.brand small{display:block;color:var(--muted);font:10px 'IBM Plex Mono';letter-spacing:1.5px;margin-top:2px}.headright{display:flex;align-items:center;gap:18px;color:var(--muted);font:10px 'IBM Plex Mono';letter-spacing:1px}.live{color:var(--lime)}.live:before{content:'';display:inline-block;width:6px;height:6px;background:var(--lime);border-radius:50%;margin-right:8px;box-shadow:0 0 10px #c7f36b80}main{max-width:1500px;margin:auto;padding:24px 28px 50px}.eyebrow{color:var(--lime);font:10px 'IBM Plex Mono';letter-spacing:1.8px;text-transform:uppercase}.title-row{display:flex;align-items:end;justify-content:space-between;margin-bottom:22px;gap:20px}.title-row h1{font:700 clamp(32px,4vw,48px)/.95 'Barlow Condensed';letter-spacing:1px;margin:8px 0 10px}.title-row p{color:var(--muted);margin:0;max-width:600px;line-height:1.6}.pill{border:1px solid var(--line);padding:9px 12px;color:#aeb9c5;font:10px 'IBM Plex Mono';white-space:nowrap}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(330px,.9fr);gap:16px}.panel{background:linear-gradient(145deg,#141a22,#0f141a);border:1px solid var(--line);min-width:0}.panel-head{height:48px;padding:0 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.panel-head h2{font:600 16px 'Barlow Condensed';letter-spacing:1.3px;margin:0;text-transform:uppercase}.tag{font:9px 'IBM Plex Mono';color:var(--muted);border:1px solid #34404b;padding:5px 7px}.engine-stage{height:330px;position:relative;background:radial-gradient(ellipse at 50% 52%,#263540 0,#111820 42%,#0d1218 75%);overflow:hidden}.engine-stage:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 49.8%,#ffffff08 50%,transparent 50.2%),linear-gradient(0deg,transparent 49.8%,#ffffff08 50%,transparent 50.2%);background-size:36px 36px;opacity:.35}.stage-note{position:absolute;z-index:2;left:15px;top:14px;color:#8794a3;font:9px 'IBM Plex Mono';letter-spacing:1px}.stage-note span{color:var(--lime)}#engineCanvas{width:100%;height:100%;display:block;touch-action:pan-y}.stage-footer{position:absolute;bottom:12px;left:14px;right:14px;display:flex;justify-content:space-between;color:#8c9aa8;font:9px 'IBM Plex Mono';pointer-events:none}.engine-controls{display:flex;gap:7px}.small-btn{background:#151d25;border:1px solid #34404b;color:#c8d1db;padding:7px 10px;font:10px 'IBM Plex Mono'}.small-btn:hover,.small-btn.active{border-color:var(--lime);color:var(--lime)}.spec-strip{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}.spec{padding:13px 15px;border-right:1px solid var(--line)}.spec:last-child{border-right:0}.spec label{display:block;color:var(--muted);font:9px 'IBM Plex Mono';letter-spacing:.7px;text-transform:uppercase;margin-bottom:7px}.spec strong{font:600 18px 'Barlow Condensed'}.spec small{font:10px 'IBM Plex Mono';color:var(--muted);margin-left:3px}.build-panel{margin-top:16px}.build-body{padding:16px}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}.field label{display:flex;justify-content:space-between;gap:8px;color:#c3ccd5;margin-bottom:8px;font-size:11px}.field label b{font:11px 'IBM Plex Mono';color:var(--lime)}select{width:100%;background:#0c1117;border:1px solid #303b47;color:var(--text);padding:10px 11px;outline:none}input[type=range]{width:100%;accent-color:var(--lime);margin:5px 0 0}.field .hint{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.4}.build-footer{border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}.btn-primary{background:var(--lime);color:#12180b;border:0;padding:12px 17px;font:700 11px 'IBM Plex Mono';letter-spacing:.5px;text-transform:uppercase}.btn-primary:hover{background:#ddff9b}.btn-secondary{background:transparent;border:1px solid #3a4652;color:#d7dfe7;padding:11px 14px;font:10px 'IBM Plex Mono'}.right-col{display:flex;flex-direction:column;gap:16px}.result-top{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}.bigmetric{background:#11171e;padding:17px}.bigmetric label{font:9px 'IBM Plex Mono';letter-spacing:1px;color:var(--muted);display:block;margin-bottom:10px}.bigmetric strong{font:700 38px/.9 'Barlow Condensed';letter-spacing:.3px}.bigmetric .unit{font:10px 'IBM Plex Mono';color:var(--muted);margin-left:5px}.bigmetric .delta{font:10px 'IBM Plex Mono';color:var(--lime);margin-top:9px}.chart-wrap{padding:10px 13px 13px}#chart{width:100%;height:240px;display:block}.chart-legend{display:flex;gap:17px;font:10px 'IBM Plex Mono';color:var(--muted);padding:2px 4px 8px}.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}.run-controls{padding:14px 16px;border-top:1px solid var(--line);display:flex;gap:9px}.run-controls .btn-primary{flex:1}.telemetry{display:grid;grid-template-columns:1fr 1fr}.telemetry-item{padding:12px 15px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.telemetry-item:nth-child(2n){border-right:0}.telemetry-item:nth-last-child(-n+2){border-bottom:0}.telemetry-item label{font:9px 'IBM Plex Mono';color:var(--muted);display:block;margin-bottom:6px}.telemetry-item strong{font:600 18px 'Barlow Condensed'}.telemetry-item small{color:var(--muted);font:10px 'IBM Plex Mono';margin-left:4px}.history-body{padding:12px 16px}.history-empty{color:var(--muted);line-height:1.6;font-size:11px;padding:6px 0}.history-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;border-bottom:1px solid #27313c;padding:10px 0;font:10px 'IBM Plex Mono'}.history-row:last-child{border-bottom:0}.history-row b{color:var(--lime);font-weight:500}.footer-note{color:#637180;text-align:center;font:9px 'IBM Plex Mono';letter-spacing:.7px;margin-top:22px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:#d3fa83;color:#10170a;padding:12px 17px;font:11px 'IBM Plex Mono';z-index:20;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.disclaimer{font-size:10px;color:#6f7d8b;line-height:1.5;padding:0 16px 14px}.section-kicker{font:9px 'IBM Plex Mono';color:var(--muted);letter-spacing:1px;text-transform:uppercase}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.right-col{display:grid;grid-template-columns:1fr 1fr}.right-col .panel:first-child{grid-column:1/-1}.title-row{align-items:start;flex-direction:column}.engine-stage{height:300px}}
-@media(max-width:600px){header{padding:0 15px;height:64px}.headright{gap:8px}.headright .hide-mobile{display:none}main{padding:19px 12px 35px}.title-row h1{font-size:38px}.right-col{display:flex}.engine-stage{height:250px}.spec{padding:10px 8px}.spec strong{font-size:16px}.spec label{font-size:8px}.field-grid{grid-template-columns:1fr}.build-footer{align-items:stretch;flex-direction:column}.build-footer>div{display:flex;gap:8px}.build-footer button{flex:1}.pill{white-space:normal}.panel-head{padding:0 12px}}
-
-/* GARAGE + DRAG MODE */
-.mode-switch{display:flex;gap:8px;margin:0 0 18px}.mode-tab{background:#10161d;border:1px solid #303b47;color:#aeb9c5;padding:11px 16px;font:10px 'IBM Plex Mono';letter-spacing:1px}.mode-tab.active{border-color:var(--lime);color:var(--lime);background:#c7f36b0c}
-#garageMode{display:none}.garage-active #garageMode{display:block}.garage-active .title-row,.garage-active .layout{display:none}
-.garage-title{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:20px}.garage-title h1{font:800 clamp(34px,4vw,50px)/.95 'Barlow Condensed';margin:8px 0;letter-spacing:1px}.garage-title p{color:var(--muted);line-height:1.6;margin:0;max-width:650px}.cashbox{border:1px solid var(--line);padding:12px 16px;font:11px 'IBM Plex Mono';white-space:nowrap}.cashbox b{color:var(--lime);font-size:18px}
-.garage-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(320px,.8fr);gap:16px}.car-stage{height:290px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 85%,#2b3945,#121a22 52%,#0b1016);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center}.car-stage:before{content:"";position:absolute;left:0;right:0;bottom:37px;height:1px;background:#8d9ba655;box-shadow:0 9px 20px #000}.car-gridlines{position:absolute;inset:0;background:linear-gradient(#ffffff06 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(transparent,#000)}
-.car-art{position:relative;width:min(92%,590px);height:170px;z-index:1;filter:drop-shadow(0 18px 12px #0009);transition:transform .25s}.car-art svg{width:100%;height:100%;overflow:visible}.car-caption{position:absolute;left:16px;top:14px;font:10px 'IBM Plex Mono';color:#93a0ad;letter-spacing:1px}.car-caption b{display:block;color:var(--lime);font-size:12px;margin-top:6px}.car-specs{display:grid;grid-template-columns:repeat(4,1fr)}.car-spec{padding:12px;border-right:1px solid var(--line);border-top:1px solid var(--line)}.car-spec:last-child{border-right:0}.car-spec label{display:block;color:var(--muted);font:9px 'IBM Plex Mono';margin-bottom:6px}.car-spec strong{font:600 18px 'Barlow Condensed'}
-.garage-body{padding:15px}.garage-field{margin-bottom:14px}.garage-field label{display:flex;justify-content:space-between;color:#c3ccd5;margin-bottom:7px;font-size:11px}.garage-field label b{color:var(--lime);font:10px 'IBM Plex Mono'}.garage-field select,.garage-field input{width:100%}.garage-field small{display:block;color:var(--muted);font-size:10px;line-height:1.5;margin-top:5px}.ratio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ratio-grid label{display:block;color:var(--muted);font:9px 'IBM Plex Mono';margin-bottom:5px}.ratio-grid input{width:100%;background:#0c1117;color:var(--text);border:1px solid #303b47;padding:9px;min-width:0;font:11px 'IBM Plex Mono'}.garage-actions{display:flex;gap:8px;padding:13px 15px;border-top:1px solid var(--line)}.garage-actions>*{flex:1}
-.race-stage{background:linear-gradient(#101923,#1b2832);padding:18px;min-height:220px;position:relative;overflow:hidden}.race-track{height:110px;position:relative;margin:20px 0 10px;background:repeating-linear-gradient(0deg,#202b34 0 28px,#293640 28px 30px);border-top:2px solid #a9b3bb;border-bottom:2px solid #a9b3bb;overflow:hidden}.race-track:after{content:"";position:absolute;left:0;right:0;top:53px;border-top:2px dashed #e8edf044}.race-car{position:absolute;left:0;width:110px;height:52px;z-index:2;top:5px;transition:none}.race-car svg{width:100%;height:100%}.race-car.rival{top:53px;filter:grayscale(.6)}.finish-line{position:absolute;right:5%;top:0;bottom:0;width:9px;background:repeating-conic-gradient(#e7edf2 0 25%,#111820 0 50%) 0/12px 12px}.race-metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}.race-metric{padding:12px;border-right:1px solid var(--line)}.race-metric:last-child{border:0}.race-metric label{display:block;color:var(--muted);font:9px 'IBM Plex Mono';margin-bottom:5px}.race-metric strong{font:600 20px 'Barlow Condensed'}.shift-row{display:flex;gap:8px;padding:12px}.shift-row button{flex:1}.shift-btn{background:#17212a;border:1px solid #3b4956;color:#eef3f7;padding:15px 8px;font:700 12px 'IBM Plex Mono'}.shift-btn:active{background:var(--lime);color:#111}.shift-btn:disabled{opacity:.35}.race-note{color:var(--muted);font-size:10px;line-height:1.5;padding:0 14px 14px}.garage-subhead{font:600 16px 'Barlow Condensed';letter-spacing:1px;text-transform:uppercase}
-@media(max-width:900px){.garage-grid{grid-template-columns:1fr}.garage-title{align-items:start;flex-direction:column}}@media(max-width:600px){.mode-switch{display:grid;grid-template-columns:1fr 1fr}.mode-tab{padding:10px 5px}.car-stage{height:230px}.car-spec{padding:9px 6px}.car-spec strong{font-size:15px}.ratio-grid{grid-template-columns:repeat(3,1fr)}.race-metrics{grid-template-columns:repeat(2,1fr)}.race-metric:nth-child(2){border-right:0}.garage-actions{flex-direction:column}.cashbox{white-space:normal}}
-
+:root{--bg:#0b1016;--panel:#121a22;--line:#293642;--text:#edf3f7;--muted:#8b9aa7;--lime:#c7f36b;--cyan:#68d9e8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px Inter,system-ui,sans-serif}button{font:inherit;cursor:pointer}header{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--line);background:#0b1016ee;position:relative;z-index:3}.brand{display:flex;align-items:center;gap:12px}.mark{border:1px solid var(--lime);color:var(--lime);width:36px;height:36px;display:grid;place-items:center;font:700 13px 'IBM Plex Mono';transform:skew(-7deg)}.brand strong{font:800 23px 'Barlow Condensed';letter-spacing:2px}.brand small{display:block;color:var(--muted);font:9px 'IBM Plex Mono';letter-spacing:1.3px;margin-top:2px}.status{color:var(--lime);font:10px 'IBM Plex Mono';letter-spacing:1px}.status:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--lime);margin-right:8px}main{max-width:1500px;margin:auto;padding:22px 24px 32px}.top{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:17px}.eyebrow{color:var(--lime);font:10px 'IBM Plex Mono';letter-spacing:1.7px;text-transform:uppercase}.top h1{font:800 clamp(34px,4vw,48px)/.95 'Barlow Condensed';margin:8px 0}.top p{color:var(--muted);margin:0;line-height:1.6}.track-pill{border:1px solid var(--line);padding:10px 13px;color:var(--muted);font:10px 'IBM Plex Mono';white-space:nowrap}.layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:14px}.view{position:relative;min-height:500px;height:min(66vh,700px);background:#a7c4d2;border:1px solid var(--line);overflow:hidden}#game{display:block;width:100%;height:100%;outline:none}.overlay{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:17px}.hudtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.hudbox{background:#0a111bdc;border:1px solid #ffffff1c;padding:11px 13px;backdrop-filter:blur(6px)}.hudlabel{font:9px 'IBM Plex Mono';letter-spacing:1px;color:#aab8c4;text-transform:uppercase}.speed{font:700 43px/.9 'Barlow Condensed';margin-top:6px}.speed small{font:10px 'IBM Plex Mono';color:#aab8c4}.lapbox{text-align:right}.lapnum{font:700 25px 'Barlow Condensed';margin-top:4px}.hudbottom{display:flex;justify-content:space-between;align-items:end;gap:12px}.hint{background:#0a111bdc;border:1px solid #ffffff1c;padding:10px 12px;color:#d6e0e8;font:10px 'IBM Plex Mono';line-height:1.7}.hint b{color:var(--lime);font-weight:500}.message{align-self:center;background:#0a111be8;border:1px solid #c7f36b77;padding:18px 22px;text-align:center;max-width:90%;margin:auto;pointer-events:auto}.message h2{font:800 28px 'Barlow Condensed';letter-spacing:1px;margin:0 0 7px}.message p{color:#b8c5cf;line-height:1.6;margin:0 0 14px}.primary{background:var(--lime);color:#11180a;border:0;padding:12px 17px;font:600 11px 'IBM Plex Mono';letter-spacing:.6px}.primary:hover{background:#dcff9a}.side{display:flex;flex-direction:column;gap:14px}.panel{background:linear-gradient(145deg,#141c25,#10161d);border:1px solid var(--line)}.panelhead{padding:14px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.panelhead h2{font:700 16px 'Barlow Condensed';letter-spacing:1px;text-transform:uppercase;margin:0}.tag{font:9px 'IBM Plex Mono';color:var(--muted);border:1px solid var(--line);padding:5px 7px}.car-select{padding:14px}.car-select label{display:block;color:var(--muted);font:9px 'IBM Plex Mono';margin-bottom:8px;letter-spacing:.8px}.car-select select{width:100%;padding:11px;background:#0b1117;color:var(--text);border:1px solid #35424e}.swatches{display:flex;gap:8px;margin-top:12px}.swatch{width:25px;height:25px;border:2px solid #ffffff28;border-radius:50%;padding:0}.swatch.active{outline:2px solid var(--lime);outline-offset:2px}.stats{display:grid;grid-template-columns:1fr 1fr}.stat{padding:13px 14px;border-top:1px solid var(--line);border-right:1px solid var(--line)}.stat:nth-child(2n){border-right:0}.stat label{display:block;color:var(--muted);font:9px 'IBM Plex Mono';margin-bottom:6px}.stat strong{font:600 21px 'Barlow Condensed'}.actions{padding:13px;display:grid;grid-template-columns:1fr 1fr;gap:8px}.secondary{background:#17212a;border:1px solid #394752;color:#e4ebf0;padding:11px 9px;font:10px 'IBM Plex Mono'}.secondary:hover{border-color:var(--lime);color:var(--lime)}.best{padding:13px 15px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.best label{color:var(--muted);font:9px 'IBM Plex Mono'}.best strong{font:600 19px 'Barlow Condensed';color:var(--lime)}.controls{padding:14px 15px;color:var(--muted);font:10px/1.9 'IBM Plex Mono'}.controls b{color:#e3ebf1;font-weight:500}.touch{display:none;position:absolute;bottom:14px;left:14px;right:14px;justify-content:space-between;pointer-events:auto}.touchgroup{display:flex;gap:8px}.touch button{width:55px;height:48px;border:1px solid #ffffff66;background:#0a111bc9;color:#fff;font:700 16px 'IBM Plex Mono';touch-action:none}.touch button:active{background:#c7f36b;color:#10170a}.footer{color:#667684;text-align:center;font:9px 'IBM Plex Mono';letter-spacing:.8px;margin-top:18px}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.view{height:58vh;min-height:390px}.side{display:grid;grid-template-columns:1fr 1fr}.side .panel:first-child{grid-row:span 2}}
+@media(max-width:600px){header{padding:0 13px;height:60px}.brand strong{font-size:20px}.brand small{font-size:8px}.status{font-size:8px}main{padding:16px 10px 24px}.top{align-items:start;flex-direction:column}.top h1{font-size:39px}.track-pill{white-space:normal}.view{height:56vh;min-height:390px}.side{display:flex}.overlay{padding:10px}.speed{font-size:34px}.hudbox{padding:9px}.hint{font-size:9px}.touch{display:flex}.message{padding:15px}.message h2{font-size:24px}}
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="mark">DL</div><div><strong>DYNO LAB</strong><small>ENGINE DEVELOPMENT SYSTEM / 001</small></div></div><div class="headright"><span class="live">SYSTEM ONLINE</span><span class="hide-mobile">BUILD 0.1.0</span><span class="hide-mobile">LOCAL SESSION</span></div></header>
+<header><div class="brand"><div class="mark">AR</div><div><strong>APEX RUN</strong><small>LOW-POLY TIME TRIAL / BUILD 01</small></div></div><div class="status">TRACK SYSTEM ONLINE</div></header>
 <main>
-
-<div class="mode-switch"><button class="mode-tab active" id="garageTab">01 / GARAGE + DRAG</button><button class="mode-tab" id="engineTab">02 / ENGINE LAB</button></div>
-<section id="garageMode">
- <div class="garage-title"><div><div class="eyebrow">VEHICLE DEVELOPMENT / DRAG STRIP 01</div><h1>BUILD YOUR <span style="color:var(--lime)">RACE CAR.</span></h1><p>Choose a chassis, swap the powertrain, tune the gearing and grip, then drive the quarter-mile yourself. Parts are trade-offs, not magic upgrades.</p></div><div class="cashbox">GARAGE BALANCE<br><b id="cash">$25,000</b> <span style="color:var(--muted)">CR</span></div></div>
- <div class="garage-grid">
-  <div>
-   <section class="panel"><div class="panel-head"><h2>01 / Vehicle bay</h2><span class="tag" id="carClass">STREET / FWD</span></div><div class="car-stage"><div class="car-gridlines"></div><div class="car-caption">CURRENT BUILD <b id="carCaption">ACCORD COUPE V6</b></div><div class="car-art" id="carArt"></div></div><div class="car-specs"><div class="car-spec"><label>CURB WEIGHT</label><strong id="weightRead">3,600 <small>LB</small></strong></div><div class="car-spec"><label>OUTPUT</label><strong id="hpRead">271 <small>HP</small></strong></div><div class="car-spec"><label>DRIVEN WHEELS</label><strong id="driveRead">FWD</strong></div><div class="car-spec"><label>EST. ¼ MILE</label><strong id="etRead">14.2 <small>S</small></strong></div></div></section>
-   <section class="panel" style="margin-top:16px"><div class="panel-head"><h2>02 / Powertrain & setup</h2><span class="tag">TUNEABLE</span></div><div class="garage-body">
-    <div class="garage-field"><label for="carSelect">Chassis <b>VEHICLE</b></label><select id="carSelect"></select><small>Different weight, driven wheels, baseline grip and starting performance.</small></div>
-    <div class="garage-field"><label for="engineSelect">Engine swap <b>POWER + CHARACTER</b></label><select id="engineSelect"></select><small>Engine output curves are simplified game models. Swaps can add weight and cost.</small></div>
-    <div class="garage-field"><label for="inductionSelect">Induction <b id="boostRead">NATURALLY ASPIRATED</b></label><select id="inductionSelect"><option value="na">Naturally aspirated</option><option value="turbo">Turbocharger</option><option value="super">Supercharger</option></select></div>
-    <div class="garage-field"><label for="ecuSelect">ECU / calibration</label><select id="ecuSelect"><option value="stock">Factory ECU</option><option value="street">Street tune</option><option value="race">Standalone race ECU</option></select></div>
-    <div class="garage-field"><label for="tireSelect">Tire compound <b id="gripRead">GRIP 1.00×</b></label><select id="tireSelect"><option value="street">Street tires</option><option value="sport">Performance tires</option><option value="drag">Drag radials</option><option value="slick">Drag slicks</option></select><small>Grip affects how much launch torque reaches the road before wheelspin.</small></div>
-    <div class="garage-field"><label for="weightSlider">Weight reduction <b id="weightTuneRead">0 lb removed</b></label><input id="weightSlider" type="range" min="0" max="300" step="25" value="0"><small>Costs credits; less mass improves acceleration but costs money.</small></div>
-    <div class="garage-field"><label>Gear ratios <b>MANUAL 5-SPEED</b></label><div class="ratio-grid" id="ratioGrid"></div><small>Higher numerical ratios accelerate harder but reach the shift point sooner. Final drive multiplies every gear.</small></div>
-   </div><div class="garage-actions"><button class="btn-secondary" id="resetTune">RESET SETUP</button><button class="btn-primary" id="applyTune">APPLY SETUP</button></div></section>
-  </div>
-  <div>
-   <section class="panel"><div class="panel-head"><h2>03 / Drag strip</h2><span class="tag" id="raceState">READY TO STAGE</span></div><div class="race-stage"><div class="section-kicker">QUARTER MILE · 402.3 M · MANUAL TRANSMISSION</div><div class="race-track"><div class="race-car" id="playerCar"></div><div class="race-car rival" id="rivalCar"></div><div class="finish-line"></div></div><div style="display:flex;justify-content:space-between;font:10px 'IBM Plex Mono';color:var(--muted)"><span>START / 0 FT</span><span>FINISH / 1320 FT</span></div></div><div class="race-metrics"><div class="race-metric"><label>VEHICLE SPEED</label><strong id="speedRead">0 <small>MPH</small></strong></div><div class="race-metric"><label>ENGINE SPEED</label><strong id="rpmRead">950 <small>RPM</small></strong></div><div class="race-metric"><label>GEAR</label><strong id="gearRead">N</strong></div><div class="race-metric"><label>ELAPSED</label><strong id="timeRead">0.00 <small>S</small></strong></div></div><div class="shift-row"><button class="shift-btn" id="launchBtn">STAGE / LAUNCH</button><button class="shift-btn" id="downBtn" disabled>− DOWN</button><button class="shift-btn" id="upBtn" disabled>+ UP</button></div><div class="race-note">Click LAUNCH to start. Shift with buttons or ↑ / ↓ keys. Aim to shift near the engine's power peak; miss a shift and the car loses acceleration. Keyboard controls are enabled while this game tab is open.</div></section>
-   <section class="panel" style="margin-top:16px"><div class="panel-head"><h2>04 / Run sheet</h2><span class="tag">CAREER LOG</span></div><div class="history-body" id="raceHistory"><div class="history-empty">Your first run is waiting. Tune the car, stage up, and see what the setup can do.</div></div><div class="disclaimer">Prototype physics: estimated performance for gameplay, not a validated vehicle simulation. Real-world times depend on many additional factors.</div></section>
-  </div>
- </div>
-</section>
-
-<div class="title-row"><div><div class="eyebrow">POWERTRAIN ENGINEERING / WORKSTATION 01</div><h1>BUILD IT. <span style="color:var(--lime)">SPIN IT.</span> MEASURE IT.</h1><p>Develop an engine configuration, predict how it behaves, then put it through a simulated dyno pull. Every change has a trade-off.</p></div><div class="pill">BASE ENGINE: HONDA J35Z2 · 3,471 CC · V6</div></div>
+<div class="top"><div><div class="eyebrow">DRIVER DEVELOPMENT // 001</div><h1>FIND YOUR LINE.</h1><p>A low-poly circuit. One car. Chase a clean lap and keep it on the tarmac.</p></div><div class="track-pill">TRACK 01 / HIGHLAND LOOP &nbsp; • &nbsp; 1.8 KM EST.</div></div>
 <div class="layout">
-<div class="left-col">
-<section class="panel"><div class="panel-head"><h2>01 / Engine assembly</h2><div class="engine-controls"><button class="small-btn active" id="viewIso">ISOMETRIC</button><button class="small-btn" id="viewTop">TOP</button><button class="small-btn" id="rotateBtn">⟳ ROTATE</button></div></div>
-<div class="engine-stage"><div class="stage-note">LIVE MODEL VIEW <span>●</span><br>DRAG TO ROTATE / SCROLL TO ZOOM</div><canvas id="engineCanvas"></canvas><div class="stage-footer"><span>J35Z2 / NATURALLY ASPIRATED</span><span id="modelStatus">ASSEMBLY: STOCK</span></div></div>
-<div class="spec-strip"><div class="spec"><label>Displacement</label><strong id="displacement">3.5</strong><small>L</small></div><div class="spec"><label>Compression</label><strong id="compressionRead">10.5</strong><small>:1</small></div><div class="spec"><label>Peak power</label><strong id="powerRead">271</strong><small>HP</small></div><div class="spec"><label>Peak torque</label><strong id="torqueRead">254</strong><small>LB-FT</small></div></div></section>
-<section class="panel build-panel"><div class="panel-head"><h2>02 / Build configuration</h2><span class="tag">EDITABLE PARAMETERS</span></div><div class="build-body"><div class="field-grid">
-<div class="field"><label for="intake">Intake system</label><select id="intake"><option value="stock">OEM intake manifold</option><option value="cold">Cold-air intake</option><option value="long">Long-runner performance</option><option value="short">Short-runner / high RPM</option></select><div class="hint">Changes airflow and the shape of the torque curve.</div></div>
-<div class="field"><label for="exhaust">Exhaust system</label><select id="exhaust"><option value="stock">OEM exhaust</option><option value="sport">Sport exhaust</option><option value="headers">Long-tube headers + exhaust</option></select><div class="hint">Lower restriction can improve high-load breathing.</div></div>
-<div class="field"><label for="cam">Camshaft profile <b id="camVal">STOCK</b></label><input id="cam" type="range" min="0" max="3" step="1" value="0"><div class="hint">More duration favors top-end power, but may soften low-speed torque.</div></div>
-<div class="field"><label for="compression">Compression ratio <b id="compVal">10.5:1</b></label><input id="compression" type="range" min="9.5" max="12.5" step=".1" value="10.5"><div class="hint">Higher compression improves efficiency; fuel and knock limits matter.</div></div>
-<div class="field"><label for="rpm">Rev limit <b id="rpmVal">6,800 RPM</b></label><input id="rpm" type="range" min="6000" max="7600" step="100" value="6800"><div class="hint">Extending RPM only helps if the engine can keep making power.</div></div>
-<div class="field"><label for="fuel">Fuel / calibration</label><select id="fuel"><option value="regular">Pump gas · conservative timing</option><option value="premium" selected>Premium · optimized timing</option><option value="race">High-octane · aggressive timing</option></select><div class="hint">The model includes a simplified knock / calibration penalty.</div></div>
-<div class="field"><label for="boost">Induction</label><select id="boost"><option value="na">Naturally aspirated</option><option value="low">Low-boost supercharger · 5 psi</option><option value="high">Supercharger · 9 psi</option></select><div class="hint">Forced induction raises output and thermal/mechanical stress.</div></div>
-<div class="field"><label for="tune">ECU calibration <b id="tuneVal">0%</b></label><input id="tune" type="range" min="0" max="100" step="5" value="25"><div class="hint">Tune quality can unlock output, with diminishing returns.</div></div>
-</div></div><div class="build-footer"><div><button class="btn-secondary" id="resetBtn">RESET TO STOCK</button><button class="btn-secondary" id="saveBuildBtn">SAVE CONFIG</button></div><button class="btn-primary" id="applyBtn">APPLY BUILD ↗</button></div></section>
-</div>
-<div class="right-col">
-<section class="panel"><div class="panel-head"><h2>03 / Dyno results</h2><span class="tag" id="runTag">AWAITING RUN</span></div><div class="result-top"><div class="bigmetric"><label>PEAK POWER</label><strong id="peakHP">271</strong><span class="unit">HP</span><div class="delta" id="hpDelta">BASELINE ESTIMATE</div></div><div class="bigmetric"><label>PEAK TORQUE</label><strong id="peakTQ">254</strong><span class="unit">LB-FT</span><div class="delta" id="tqDelta">BASELINE ESTIMATE</div></div></div><div class="chart-wrap"><div class="chart-legend"><span><i class="legend-dot" style="background:var(--lime)"></i>HORSEPOWER</span><span><i class="legend-dot" style="background:var(--cyan)"></i>TORQUE</span></div><canvas id="chart"></canvas></div><div class="run-controls"><button class="btn-primary" id="runBtn">▶ RUN DYNO PULL</button><button class="btn-secondary" id="compareBtn">COMPARE</button></div><div class="disclaimer">Simulation is a simplified educational model, not measured J35Z2 data or an engine-safety tool. Real results depend on hardware, fuel, conditions, and calibration.</div></section>
-<section class="panel"><div class="panel-head"><h2>04 / Run telemetry</h2><span class="tag" id="telemetryStatus">IDLE</span></div><div class="telemetry"><div class="telemetry-item"><label>ENGINE SPEED</label><strong id="telRPM">0</strong><small>RPM</small></div><div class="telemetry-item"><label>THROTTLE</label><strong id="telThrottle">0</strong><small>%</small></div><div class="telemetry-item"><label>EST. BMEP</label><strong id="telBmep">—</strong><small>PSI</small></div><div class="telemetry-item"><label>INDUCTION PRESSURE</label><strong id="telBoost">0.0</strong><small>PSI</small></div><div class="telemetry-item"><label>RELATIVE STRESS</label><strong id="telStress">LOW</strong><small id="stressPct">—</small></div><div class="telemetry-item"><label>EST. AIRFLOW</label><strong id="telAir">—</strong><small>LB/MIN</small></div></div></section>
-<section class="panel"><div class="panel-head"><h2>05 / Run history</h2><button class="small-btn" id="clearHistory">CLEAR</button></div><div class="history-body" id="history"><div class="history-empty">No runs recorded yet. Apply a build and run the dyno to start a comparison log.</div></div></section>
-</div></div><div class="footer-note">DYNO LAB / PERSONAL ENGINEERING SANDBOX / SIMULATED OUTPUTS — NOT FOR REAL-WORLD ENGINE VALIDATION</div></main><div class="toast" id="toast"></div>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script>
-(() => {
-const $ = id => document.getElementById(id);
-const defaults={intake:'stock',exhaust:'stock',cam:0,compression:10.5,rpm:6800,fuel:'premium',boost:'na',tune:25};
-let config={...defaults},active=null,history=[],compare=null,rotation=true,drag=null,angle=0.55,tilt=-0.15,zoom=1;
-const camNames=['STOCK','STAGE 1','STAGE 2','STAGE 3'];
-function calc(c){
- let intake={stock:1,cold:1.025,long:1.045,short:1.055}[c.intake], exhaust={stock:1,sport:1.035,headers:1.065}[c.exhaust];
- let camFlow=[1,1.025,1.052,1.075][c.cam],camLow=[1,.992,.97,.94][c.cam];
- let comp=1+(Number(c.compression)-10.5)*.027;
- let fuel={regular:.978,premium:1,race:1.025}[c.fuel], tune=1+Number(c.tune)/100*.035;
- let boostPsi={na:0,low:5,high:9}[c.boost],boostMult=1+boostPsi/14.7*.82;
- let red=Number(c.rpm), tqBase=254*intake*exhaust*camFlow*comp*fuel*tune*boostMult;
- let points=[],maxHP=0,maxTQ=0,peakHPAt=0,peakTQAt=0;
- for(let rpm=1800;rpm<=red;rpm+=100){
-  let x=(rpm-1800)/(red-1800);
-  let tqShape=(.78+.28*Math.exp(-Math.pow((rpm-3900)/1900,2))-.11*x);
-  tqShape*=camLow*(1-.10*Math.max(0,x-.76)*3);
-  let hpFactor=1+Math.max(0,rpm-4400)/10000;
-  let tq=tqBase*tqShape;
-  if(rpm>red*.89)tq*=Math.max(.80,1-(rpm-red*.89)/(red*.11)*.20);
-  let hp=tq*rpm/5252;
-  points.push({rpm,hp,tq});
-  if(hp>maxHP){maxHP=hp;peakHPAt=rpm}if(tq>maxTQ){maxTQ=tq;peakTQAt=rpm}
- }
- let stress= Math.max(0,(Number(c.compression)-10.5)*7)+boostPsi*3.1+Number(c.tune)*.09+Number(c.rpm-6800)/100*1.8+Number(c.cam)*1.7;
- return {points,hp:Math.round(maxHP),tq:Math.round(maxTQ),peakHPAt,peakTQAt,stress:Math.round(stress),boostPsi,displacement:3.471};
-}
-function readControls(){return {intake:$('intake').value,exhaust:$('exhaust').value,cam:+$('cam').value,compression:+$('compression').value,rpm:+$('rpm').value,fuel:$('fuel').value,boost:$('boost').value,tune:+$('tune').value}}
-function updateLabels(){ $('camVal').textContent=camNames[config.cam];$('compVal').textContent=Number(config.compression).toFixed(1)+':1';$('rpmVal').textContent=Number(config.rpm).toLocaleString()+' RPM';$('tuneVal').textContent=config.tune+'%';$('compressionRead').textContent=Number(config.compression).toFixed(1);$('modelStatus').textContent='ASSEMBLY: '+(config.boost==='na'?'NA':config.boost==='low'?'5 PSI BOOST':'9 PSI BOOST'); }
-function drawChart(result,second=null){
- const canvas=$('chart'),rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.max(1,rect.width*dpr);canvas.height=Math.max(1,rect.height*dpr);
- const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);let w=rect.width,h=rect.height;ctx.clearRect(0,0,w,h);
- const pad={l:36,r:10,t:13,b:25},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;let maxR=Math.max(config.rpm,second?.config.rpm||0),minR=1800,maxVal=Math.max(350,...result.points.map(p=>p.hp),...(second?second.result.points.map(p=>p.hp):[]))*1.12;
- const X=r=>pad.l+(r-minR)/(maxR-minR)*cw,Y=v=>pad.t+ch-v/maxVal*ch;
- ctx.font='9px IBM Plex Mono, monospace';ctx.textAlign='right';ctx.textBaseline='middle';
- for(let i=0;i<=4;i++){let y=pad.t+ch*i/4;ctx.strokeStyle='#28323d';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillStyle='#788694';ctx.fillText(Math.round(maxVal*(1-i/4)),pad.l-7,y)}
- ctx.textAlign='center';ctx.textBaseline='top';for(let r=2000;r<=maxR;r+=1000){let x=X(r);ctx.strokeStyle='#222c36';ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,pad.t+ch);ctx.stroke();ctx.fillStyle='#788694';ctx.fillText((r/1000).toFixed(0)+'k',x,h-17)}
- function line(key,color,data,dash=[]){ctx.beginPath();ctx.setLineDash(dash);ctx.strokeStyle=color;ctx.lineWidth=2;data.forEach((p,i)=>i?ctx.lineTo(X(p.rpm),Y(p[key])):ctx.moveTo(X(p.rpm),Y(p[key])));ctx.stroke();ctx.setLineDash([])}
- line('hp','#c7f36b',result.points);line('tq','#65d9e8',result.points);
- if(second){line('hp','#c7f36b',second.result.points,[5,4]);line('tq','#65d9e8',second.result.points,[5,4])}
-}
-function updateResults(result, baseline=false){
- $('peakHP').textContent=result.hp;$('peakTQ').textContent=result.tq;$('powerRead').textContent=result.hp;$('torqueRead').textContent=result.tq;
- $('hpDelta').textContent=baseline?'BASELINE ESTIMATE':(result.hp>=271?'+':'')+(result.hp-271)+' HP VS STOCK';
- $('tqDelta').textContent=baseline?'BASELINE ESTIMATE':(result.tq>=254?'+':'')+(result.tq-254)+' LB-FT VS STOCK';
- $('telStress').textContent=result.stress<10?'LOW':result.stress<24?'MODERATE':'HIGH';$('stressPct').textContent=result.stress+'/40';$('telBoost').textContent=result.boostPsi.toFixed(1);
- $('telAir').textContent=(result.hp/10.2).toFixed(1);$('telBmep').textContent=(150.8*result.tq/254).toFixed(0);
- $('runTag').textContent=baseline?'ESTIMATED BASELINE':'BUILD ESTIMATE';drawChart(result,compare);
-}
-function applyBuild(){config=readControls();active=calc(config);updateLabels();updateResults(active);renderEngine();toast('BUILD APPLIED · MODEL UPDATED');}
-function setControls(c){Object.keys(c).forEach(k=>{if($(k))$(k).value=c[k]})}
-function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2100)}
-function runDyno(){config=readControls();active=calc(config);updateLabels();updateResults(active);$('telemetryStatus').textContent='PULL COMPLETE';$('telThrottle').textContent='100';$('telRPM').textContent=Number(config.rpm).toLocaleString();let entry={name:'RUN '+String(history.length+1).padStart(2,'0'),hp:active.hp,tq:active.tq,config:{...config},result:active,stamp:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})};history.unshift(entry);renderHistory();$('runTag').textContent='RUN COMPLETE';toast('DYNO PULL COMPLETE · '+active.hp+' HP');}
-function renderHistory(){$('history').innerHTML=history.length?history.slice(0,6).map((r,i)=>'<div class="history-row"><span>'+r.name+' <span style="color:#778593">· '+r.stamp+'</span></span><span><b>'+r.hp+' HP</b></span><span>'+r.tq+' LB-FT</span></div>').join(''):'<div class="history-empty">No runs recorded yet. Apply a build and run the dyno to start a comparison log.</div>'}
-$('applyBtn').addEventListener('click',applyBuild);$('runBtn').addEventListener('click',runDyno);
-$('resetBtn').addEventListener('click',()=>{setControls(defaults);config={...defaults};applyBuild();toast('RESTORED FACTORY-STYLE BASELINE')});
-$('saveBuildBtn').addEventListener('click',()=>{localStorage.setItem('dynolab-build',JSON.stringify(readControls()));toast('CONFIG SAVED IN THIS BROWSER')});
-$('compareBtn').addEventListener('click',()=>{if(!history.length){toast('RUN THE DYNO FIRST TO SET A COMPARISON');return}compare=history[0];drawChart(active,compare);toast('DASHED CURVES SHOW '+compare.name)});
-$('clearHistory').addEventListener('click',()=>{history=[];compare=null;renderHistory();drawChart(active);toast('RUN HISTORY CLEARED')});
-['intake','exhaust','cam','compression','rpm','fuel','boost','tune'].forEach(id=>$(id).addEventListener('input',()=>{const c=readControls();$('camVal').textContent=camNames[c.cam];$('compVal').textContent=c.compression.toFixed(1)+':1';$('rpmVal').textContent=c.rpm.toLocaleString()+' RPM';$('tuneVal').textContent=c.tune+'%'}));
-let scene, camera, renderer, engineGroup;
-function init3D(){
- const canvas=$('engineCanvas');if(!window.THREE){drawFallback(canvas);return}
- scene=new THREE.Scene();scene.background=new THREE.Color('#111820');
- camera=new THREE.PerspectiveCamera(36,1,.1,100);camera.position.set(6.5,5.3,7.5);camera.lookAt(0,0,0);
- renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);renderer.outputColorSpace=THREE.SRGBColorSpace;
- scene.add(new THREE.HemisphereLight(0xc5e0f5,0x28313b,2));
- const key=new THREE.DirectionalLight(0xffffff,3.2);key.position.set(5,8,6);scene.add(key);const rim=new THREE.DirectionalLight(0x65d9e8,2);rim.position.set(-6,2,-4);scene.add(rim);
- const grid=new THREE.GridHelper(12,24,0x344452,0x25323d);grid.position.y=-1.4;scene.add(grid);
- engineGroup=new THREE.Group();scene.add(engineGroup);renderEngine();resize3D();
- canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId)});
- canvas.addEventListener('pointermove',e=>{if(!drag)return;angle+=(e.clientX-drag.x)*.012;tilt=Math.max(-.8,Math.min(.7,tilt+(e.clientY-drag.y)*.008));drag={x:e.clientX,y:e.clientY};engineGroup.rotation.y=angle;engineGroup.rotation.x=tilt});
- canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
- canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.7,Math.min(1.5,zoom+(e.deltaY>0?-.05:.05)));camera.position.multiplyScalar(e.deltaY>0?1.06:.94);camera.lookAt(0,0,0)},{passive:false});
- $('viewIso').onclick=()=>{camera.position.set(6.5,5.3,7.5);camera.lookAt(0,0,0);angle=.55;tilt=-.15;engineGroup.rotation.set(tilt,angle,0);$('viewIso').classList.add('active');$('viewTop').classList.remove('active')};
- $('viewTop').onclick=()=>{camera.position.set(0,10,.01);camera.lookAt(0,0,0);engineGroup.rotation.set(0,0,0);$('viewTop').classList.add('active');$('viewIso').classList.remove('active')};
- $('rotateBtn').onclick=()=>{rotation=!rotation;$('rotateBtn').classList.toggle('active',rotation);toast(rotation?'AUTO ROTATION ON':'AUTO ROTATION OFF')};
- animate();
-}
-function mat(color,metal=0.6,rough=.38){return new THREE.MeshStandardMaterial({color,metalness:metal,roughness:rough})}
-function box(g,x,y,z,sx,sy,sz,m,rx=0,ry=0,rz=0){let o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);o.rotation.set(rx,ry,rz);g.add(o);return o}
-function cyl(g,x,y,z,r1,r2,len,m,rx=0,ry=0,rz=0){let o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,len,16),m);o.position.set(x,y,z);o.rotation.set(rx,ry,rz);g.add(o);return o}
-function renderEngine(){if(!engineGroup)return;while(engineGroup.children.length){let o=engineGroup.children.pop();o.geometry?.dispose();if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material?.dispose()}
- const alloy=mat('#8d9aa4',.82,.3),dark=mat('#303c46',.7,.36),black=mat('#171e25',.35,.5),rubber=mat('#111519',.05,.8),silver=mat('#bbc4c9',.85,.23),lime=mat('#c7f36b',.45,.28),orange=mat('#e98245',.55,.3);
- // Lower block, oil pan and crankcase
- box(engineGroup,0,-.52,0,2.45,.75,1.22,dark);box(engineGroup,0,-.98,0,2.05,.25,1.02,black);
- box(engineGroup,0,-.12,0,2.28,.38,.94,alloy);
- // Transverse V banks, bank angle shown as a compact V
- for(let side of [-1,1]){
-  let bank=box(engineGroup,0,.48,side*.39,2.2,.68,.49,alloy,side*.48,0,0);
-  for(let i=0;i<3;i++){
-   let x=(i-1)*.66;
-   cyl(engineGroup,x,.84,side*.56,.22,.22,.16,dark,Math.PI/2,0,0);
-   cyl(engineGroup,x,.86,side*.62,.15,.15,.07,silver,Math.PI/2,0,0);
-   box(engineGroup,x,.22,side*.42,.42,.22,.43,dark,side*.48,0,0);
-  }
-  box(engineGroup,0,.88,side*.54,2.25,.14,.25,black,side*.48,0,0);
-  for(let i=0;i<3;i++)box(engineGroup,(i-1)*.66,.98,side*.57,.37,.11,.15,orange,side*.48,0,0);
- }
- // Front timing cover, pulleys and accessory belt
- box(engineGroup,-1.3,-.05,0,.24,1.12,1.13,alloy);
- for(let i=0;i<3;i++){let x=-1.38+i*.12;cyl(engineGroup,x,-.48,-.48,.25,.25,.11,black,0,Math.PI/2,0);cyl(engineGroup,x-.07,-.48,-.48,.16,.16,.12,silver,0,Math.PI/2,0)}
- // intake manifold and six runners
- box(engineGroup,.05,.72,0,1.3,.23,.44,black);
- for(let side of [-1,1])for(let i=0;i<3;i++){let x=(i-1)*.55;let runner=cyl(engineGroup,x,.65,side*.22,.075,.09,.58,silver,.6,0,0);runner.rotation.z=side*.3}
- box(engineGroup,.12,1.08,0,1.05,.28,.62,config.intake==='short'?orange:dark);
- // Exhaust banks and runners
- for(let side of [-1,1])for(let i=0;i<3;i++){let x=(i-1)*.63;let p=cyl(engineGroup,x,.12,side*.78,.07,.09,.65,config.exhaust==='headers'?orange:dark,Math.PI/2,0,0);p.rotation.z=side*.14}
- // boosted induction cue
- if(config.boost!=='na'){cyl(engineGroup,1.3,.83,0,.27,.27,.35,orange,0,0,Math.PI/2);cyl(engineGroup,1.5,.83,0,.17,.17,.1,silver,0,0,Math.PI/2)}
- // visible detail ribs / fasteners
- for(let side of [-1,1])for(let i=0;i<4;i++)cyl(engineGroup,-.85+i*.5,-.15,side*.61,.045,.045,.06,silver,Math.PI/2,0,0);
- engineGroup.rotation.set(tilt,angle,0);
-}
-function drawFallback(canvas){const ctx=canvas.getContext('2d');canvas.width=canvas.clientWidth*2;canvas.height=canvas.clientHeight*2;ctx.scale(2,2);ctx.fillStyle='#111820';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);ctx.fillStyle='#c7f36b';ctx.font='14px monospace';ctx.fillText('3D ENGINE VIEW REQUIRES WEBGL',25,40);ctx.fillStyle='#8794a3';ctx.font='11px monospace';ctx.fillText('Use a modern browser with hardware acceleration enabled.',25,62)}
-function resize3D(){if(!renderer||!camera)return;let c=$('engineCanvas');let w=c.clientWidth,h=c.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();drawChart(active,compare)}
-function animate(){requestAnimationFrame(animate);if(renderer&&scene&&camera){if(rotation&&engineGroup&&!drag)engineGroup.rotation.y+=.0025;renderer.render(scene,camera)}}
-window.addEventListener('resize',()=>{resize3D();if(active)drawChart(active,compare)});
-try{let saved=localStorage.getItem('dynolab-build');if(saved)setControls({...defaults,...JSON.parse(saved)})}catch(e){}
-config=readControls();active=calc(config);updateLabels();updateResults(active,true);init3D();
-})();
+<section class="view" id="view"><canvas id="game" aria-label="3D low-poly racing game"></canvas>
+<div class="overlay"><div class="hudtop"><div class="hudbox"><div class="hudlabel">Ground speed</div><div class="speed"><span id="speed">000</span> <small>KM/H</small></div></div><div class="hudbox lapbox"><div class="hudlabel">Current lap</div><div class="lapnum" id="lap">READY</div><div class="hudlabel" style="margin-top:6px">TIME &nbsp; <span id="timer">00:00.000</span></div></div></div><div class="message" id="message"><div class="eyebrow">APEX RUN / TIME ATTACK</div><h2>READY TO DRIVE?</h2><p>Take on the Highland Loop. Pass the checkpoints, find your racing line, and set a lap time.</p><button class="primary" id="start">START RUN →</button></div><div class="hudbottom"><div class="hint"><b>W / ↑</b> THROTTLE &nbsp; <b>S / ↓</b> BRAKE<br><b>A D / ← →</b> STEER &nbsp; <b>R</b> RESET</div><div class="hint">CHECKPOINTS <b id="cp">0 / 4</b><br>BEST LAP <b id="bestHud">--:--.---</b></div></div><div class="touch"><div class="touchgroup"><button data-key="left">◀</button><button data-key="right">▶</button></div><div class="touchgroup"><button data-key="brake">▼</button><button data-key="gas">▲</button></div></div></div>
+</section>
+<aside class="side">
+<section class="panel"><div class="panelhead"><h2>Vehicle setup</h2><span class="tag">GARAGE / 01</span></div><div class="car-select"><label for="carSelect">SELECT CHASSIS</label><select id="carSelect"><option value="coupe">VECTOR GT / ROAD COUPE</option><option value="rally">RIDGELINE / RALLY HATCH</option><option value="prototype">ARX-01 / TRACK PROTOTYPE</option></select><div class="swatches" aria-label="Paint color"><button class="swatch active" data-color="#c7f36b" style="background:#c7f36b" aria-label="Lime"></button><button class="swatch" data-color="#ff645f" style="background:#ff645f" aria-label="Red"></button><button class="swatch" data-color="#63d6e8" style="background:#63d6e8" aria-label="Cyan"></button><button class="swatch" data-color="#e7edf2" style="background:#e7edf2" aria-label="White"></button><button class="swatch" data-color="#a78bfa" style="background:#a78bfa" aria-label="Violet"></button></div></div><div class="stats"><div class="stat"><label>POWER</label><strong id="power">320 <small>HP</small></strong></div><div class="stat"><label>0–100 KM/H</label><strong id="accel">4.8 <small>SEC</small></strong></div><div class="stat"><label>TOP SPEED</label><strong id="topSpeed">220 <small>KM/H</small></strong></div><div class="stat"><label>DRIVE</label><strong id="drive">RWD</strong></div></div><div class="actions"><button class="secondary" id="reset">↺ RESET CAR</button><button class="secondary" id="restart">⟳ RESTART LAP</button></div><div class="best"><label>PERSONAL BEST</label><strong id="best">--:--.---</strong></div></section>
+<section class="panel"><div class="panelhead"><h2>Driver notes</h2><span class="tag">INFO</span></div><div class="controls"><b>01 /</b> Smooth steering preserves momentum.<br><b>02 /</b> Lift before tight corners; grass slows you down.<br><b>03 /</b> Hit all four checkpoints to validate a lap.<br><b>04 /</b> The car follows a simplified arcade physics model.</div></section>
+</aside>
+</div><div class="footer">APEX RUN // ORIGINAL LOW-POLY PROTOTYPE // MADE FOR THE WEB</div>
+</main>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const canvas=document.querySelector('#game'), view=document.querySelector('#view');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;
+const scene=new THREE.Scene();scene.background=new THREE.Color('#a8c7d4');scene.fog=new THREE.Fog('#a8c7d4',95,260);
+const camera=new THREE.PerspectiveCamera(58,1,.1,500);
+scene.add(new THREE.HemisphereLight('#e5f5ff','#59634e',2.0));
+const sun=new THREE.DirectionalLight('#fff4dc',2.7);sun.position.set(-45,70,35);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-80;sun.shadow.camera.right=80;sun.shadow.camera.top=80;sun.shadow.camera.bottom=-80;scene.add(sun);
+const mat=(color,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness,flatShading:true});
+const grassMat=mat('#77966b'), roadMat=mat('#424b52'), shoulderMat=mat('#c5c7b5'), lineMat=mat('#e6e7d9'), rockMat=mat('#7f8b8d'), treeMat=mat('#426c4e'), trunkMat=mat('#665648');
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(700,700),grassMat);ground.rotation.x=-Math.PI/2;ground.position.y=-.18;ground.receiveShadow=true;scene.add(ground);
+const points=[[-4,0,52],[22,0,44],[42,0,23],[44,0,-3],[27,0,-27],[3,0,-40],[-25,0,-34],[-43,0,-15],[-38,0,12],[-23,0,35]];
+const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)),true,'catmullrom',.16);
+const divisions=420, roadWidth=12;
+function makeRibbon(width,y,material,offset=0){const verts=[],indices=[];for(let i=0;i<=divisions;i++){const t=i/divisions,p=curve.getPointAt(t),tan=curve.getTangentAt(t),side=new THREE.Vector3(-tan.z,0,tan.x).normalize();p.addScaledVector(side,offset);verts.push(p.x-side.x*width/2,y,p.z-side.z*width/2,p.x+side.x*width/2,y,p.z+side.z*width/2);if(i<divisions){const a=i*2;indices.push(a,a+1,a+2,a+1,a+3,a+2)}}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));g.setIndex(indices);g.computeVertexNormals();const mesh=new THREE.Mesh(g,material);mesh.receiveShadow=true;scene.add(mesh);return mesh}
+makeRibbon(roadWidth+2,.005,shoulderMat);makeRibbon(roadWidth,.025,roadMat);
+function addRoadDashes(){const geo=new THREE.BoxGeometry(.18,.035,1.7);for(let i=0;i<70;i++){const t=i/70,p=curve.getPointAt(t),tan=curve.getTangentAt(t);const m=new THREE.Mesh(geo,lineMat);m.position.set(p.x,.055,p.z);m.rotation.y=Math.atan2(tan.x,tan.z);scene.add(m)}}addRoadDashes();
+const checkpoints=[.13,.37,.62,.86].map(t=>curve.getPointAt(t));
+function makeGate(t,index){const p=curve.getPointAt(t),tan=curve.getTangentAt(t),yaw=Math.atan2(tan.x,tan.z);const group=new THREE.Group();group.position.set(p.x,.1,p.z);group.rotation.y=yaw;const active=mat(index===0?'#c7f36b':'#e5edf0');for(const x of [-roadWidth*.46,roadWidth*.46]){const post=new THREE.Mesh(new THREE.BoxGeometry(.22,3,.22),active);post.position.set(x,1.5,0);post.castShadow=true;group.add(post)}const bar=new THREE.Mesh(new THREE.BoxGeometry(roadWidth*.94,.2,.22),active);bar.position.y=3;group.add(bar);scene.add(group);return group}
+const gates=[0,.25,.5,.75].map((t,i)=>makeGate(t,i));
+function seeded(n){return (Math.sin(n*127.1+31.7)*43758.5453)%1}
+for(let i=0;i<135;i++){const t=(i*0.61803398875)%1,p=curve.getPointAt(t),tan=curve.getTangentAt(t),side=new THREE.Vector3(-tan.z,0,tan.x).normalize(),s=(i%2?1:-1)*(10+Math.abs(seeded(i))*28),x=p.x+side.x*s,z=p.z+side.z*s,h=2.5+Math.abs(seeded(i+10))*5;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.18,.28,h*.35,5),trunkMat);trunk.position.set(x,h*.175,z);trunk.castShadow=true;scene.add(trunk);const crown=new THREE.Mesh(new THREE.ConeGeometry(1.3+ h*.18,h,5),treeMat);crown.position.set(x,h*.35+h*.5,z);crown.rotation.y=(i%5)*.4;crown.castShadow=true;scene.add(crown)}
+for(let i=0;i<75;i++){const t=i/75,p=curve.getPointAt(t),tan=curve.getTangentAt(t),side=new THREE.Vector3(-tan.z,0,tan.x).normalize();for(const s of [-1,1]){const x=p.x+side.x*s*8.4,z=p.z+side.z*s*8.4;const block=new THREE.Mesh(new THREE.BoxGeometry(.7,.38,.7),mat(i%3===0?'#d6d6c8':'#b94e49'));block.position.set(x,.22,z);block.rotation.y=Math.atan2(tan.x,tan.z);scene.add(block)}}
+const carGroup=new THREE.Group();scene.add(carGroup);
+let carBody, carColor='#c7f36b', carType='coupe', wheels=[], carDims={length:4.2,width:1.85,height:1.05,power:320,top:220,accel:4.8,drive:'RWD'};
+const dark=mat('#17212a'), glass=mat('#263f4d'), tireMat=mat('#171b20'), rimMat=mat('#c6d1d5'), lampMat=mat('#f3f0ce'), tailMat=mat('#e84c4c');
+function buildCar(){while(carGroup.children.length)carGroup.remove(carGroup.children[0]);wheels=[];const paint=mat(carColor,.65);let L=carDims.length,W=carDims.width,H=carDims.height;
+const base=new THREE.Mesh(new THREE.BoxGeometry(L*.95,H*.45,W),paint);base.position.y=.68;base.castShadow=true;base.receiveShadow=true;carGroup.add(base);
+const hood=new THREE.Mesh(new THREE.BoxGeometry(L*.31,H*.19,W*.9),paint);hood.position.set(L*.31,.86,0);hood.castShadow=true;carGroup.add(hood);
+const cabin=new THREE.Mesh(new THREE.BoxGeometry(L*.39,H*.47,W*.73),glass);cabin.position.set(-L*.04,1.02,0);cabin.castShadow=true;carGroup.add(cabin);
+const roof=new THREE.Mesh(new THREE.BoxGeometry(L*.24,.12,W*.69),paint);roof.position.set(-L*.05,1.28,0);carGroup.add(roof);
+const front=new THREE.Mesh(new THREE.BoxGeometry(.08,.18,W*.48),dark);front.position.set(L*.49,.59,0);carGroup.add(front);
+for(const z of [-W*.34,W*.34]){const light=new THREE.Mesh(new THREE.BoxGeometry(.09,.12,.28),lampMat);light.position.set(L*.49,.78,z);carGroup.add(light);const tail=new THREE.Mesh(new THREE.BoxGeometry(.09,.12,.3),tailMat);tail.position.set(-L*.49,.76,z);carGroup.add(tail)}
+for(const x of [-L*.31,L*.31])for(const z of [-W*.53,W*.53]){const wh=new THREE.Group();wh.position.set(x,.43,z);const tire=new THREE.Mesh(new THREE.CylinderGeometry(.39,.39,.23,10),tireMat);tire.rotation.x=Math.PI/2;tire.castShadow=true;wh.add(tire);const rim=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.245,8),rimMat);rim.rotation.x=Math.PI/2;wh.add(rim);carGroup.add(wh);wheels.push(wh)}
+const spoiler=new THREE.Mesh(new THREE.BoxGeometry(.16,.12,W*.95),dark);spoiler.position.set(-L*.46,1.05,0);carGroup.add(spoiler);
+carGroup.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}})}
+buildCar();
+const state={pos:curve.getPointAt(.005),heading:Math.atan2(curve.getTangentAt(.005).x,curve.getTangentAt(.005).z),speed:0,lap:0,started:false,finished:false,startTime:0,lapStart:0,check:0,prevT:0,best:null,lastGate:-1};
+const keys={};let paintMaterials=[];
+function setText(id,value){document.getElementById(id).textContent=value}
+function fmt(ms){if(!Number.isFinite(ms)||ms<0)return'--:--.---';const m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60,mm=Math.floor(ms%1000);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+String(mm).padStart(3,'0')}
+function closestTrack(pos){let best={d:1e9,t:0,p:null};for(let i=0;i<=240;i++){const t=i/240,p=curve.getPointAt(t),d=p.distanceTo(pos);if(d<best.d)best={d,t,p}}return best}
+function resetCar(){state.pos=curve.getPointAt(.005);const tan=curve.getTangentAt(.005);state.heading=Math.atan2(tan.x,tan.z);state.speed=0;carGroup.position.set(state.pos.x,0,state.pos.z);carGroup.rotation.y=state.heading}
+function restartLap(){resetCar();state.started=false;state.finished=false;state.check=0;state.lapStart=0;state.prevT=0;setText('lap','READY');setText('timer','00:00.000');setText('cp','0 / 4');document.getElementById('message').style.display='block';document.querySelector('#message h2').textContent='READY TO DRIVE?';document.querySelector('#message p').textContent='Take on the Highland Loop. Pass the checkpoints, find your racing line, and set a lap time.';document.querySelector('#start').textContent='START RUN →'}
+function startRun(){state.started=true;state.finished=false;state.startTime=performance.now();state.lapStart=state.startTime;state.check=0;state.prevT=0;document.getElementById('message').style.display='none';setText('lap','1');setText('cp','0 / 4')}
+document.querySelector('#start').addEventListener('click',startRun);document.querySelector('#reset').addEventListener('click',resetCar);document.querySelector('#restart').addEventListener('click',restartLap);
+document.querySelector('#carSelect').addEventListener('change',e=>{carType=e.target.value;if(carType==='coupe')carDims={length:4.2,width:1.85,height:1.05,power:320,top:220,accel:4.8,drive:'RWD'};if(carType==='rally')carDims={length:3.8,width:1.8,height:1.16,power:275,top:195,accel:5.2,drive:'AWD'};if(carType==='prototype')carDims={length:4.7,width:2.05,height:.85,power:510,top:270,accel:3.2,drive:'RWD'};setText('power',carDims.power+' HP');setText('topSpeed',carDims.top+' KM/H');setText('accel',carDims.accel+' SEC');setText('drive',carDims.drive);buildCar();});
+document.querySelectorAll('.swatch').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));b.classList.add('active');carColor=b.dataset.color;buildCar()}));
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();keys[k]=true;if(k==='r')resetCar();if(k==='enter'&&!state.started)startRun()});
+addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+document.querySelectorAll('[data-key]').forEach(b=>{const k=b.dataset.key;const down=e=>{e.preventDefault();keys[k]=true},up=e=>{e.preventDefault();keys[k]=false};b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointerleave',up);b.addEventListener('pointercancel',up)});
+const clock=new THREE.Clock();
+function update(dt,now){if(state.started&&!state.finished){const gas=keys.w||keys.arrowup||keys.gas,brake=keys.s||keys.arrowdown||keys.brake,left=keys.a||keys.arrowleft||keys.left,right=keys.d||keys.arrowright||keys.right;const max=carDims.top/3.6;state.speed+=gas?18*dt:0;state.speed-=brake?34*dt:0;state.speed-=state.speed>0?2.3*dt:0;state.speed=Math.max(0,Math.min(max,state.speed));const steer=(right?1:0)-(left?1:0);const grip=Math.min(1,state.speed/5);state.heading+=steer*dt*(1.9+Math.min(state.speed/20,1.6))*grip*(state.speed>0?1:-1);const forward=new THREE.Vector3(Math.sin(state.heading),0,Math.cos(state.heading));state.pos.addScaledVector(forward,state.speed*dt);const near=closestTrack(state.pos);if(near.d>roadWidth*.53){state.speed*=Math.pow(.38,dt);if(near.d>roadWidth*1.7){state.pos.lerp(near.p,Math.min(1,dt*1.8));}}
+const t=near.t;if(state.check<4){const target=[.13,.37,.62,.86][state.check];let delta=Math.abs(t-target);if(delta<.012&&near.d<roadWidth*.6){state.check++;setText('cp',state.check+' / 4');gates[state.check-1].children.forEach(o=>o.material=mat('#c7f36b'));}}
+if(state.check===4&&t<.04&&state.prevT>.9&&now-state.lapStart>10000){const lapMs=now-state.lapStart;state.finished=true;state.started=false;if(state.best===null||lapMs<state.best){state.best=lapMs;setText('best',fmt(lapMs));setText('bestHud',fmt(lapMs))}document.getElementById('message').style.display='block';document.querySelector('#message h2').textContent='LAP COMPLETE';document.querySelector('#message p').textContent='Lap time: '+fmt(lapMs)+(lapMs===state.best?' — new personal best!':'')+' Ready for another run?';document.querySelector('#start').textContent='RUN AGAIN →';setText('lap','DONE')}state.prevT=t;setText('timer',fmt(now-state.lapStart));}
+carGroup.position.set(state.pos.x,0,state.pos.z);carGroup.rotation.y=state.heading;wheels.forEach(w=>{w.rotation.x-=state.speed*dt*1.8});setText('speed',String(Math.round(state.speed*3.6)).padStart(3,'0'));
+const forward=new THREE.Vector3(Math.sin(state.heading),0,Math.cos(state.heading));const camTarget=carGroup.position.clone().add(new THREE.Vector3(0,1,0));const camPos=carGroup.position.clone().addScaledVector(forward,-10).add(new THREE.Vector3(0,5.5,0));camera.position.lerp(camPos,1-Math.exp(-dt*4));camera.lookAt(camTarget.addScaledVector(forward,5));}
+function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}new ResizeObserver(resize).observe(view);resize();resetCar();
+function animate(now){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.04);update(dt,now);renderer.render(scene,camera)}requestAnimationFrame(animate);
 </script>
-
-<script>
-(()=> {
-const $g=id=>document.getElementById(id);
-document.body.classList.add('garage-active');
-$g('garageTab').onclick=()=>{document.body.classList.add('garage-active');$g('garageTab').classList.add('active');$g('engineTab').classList.remove('active');};
-$g('engineTab').onclick=()=>{document.body.classList.remove('garage-active');$g('engineTab').classList.add('active');$g('garageTab').classList.remove('active');window.dispatchEvent(new Event('resize'));};
-const cars=[
-{id:'accord',name:'2011 Honda Accord Coupe V6',short:'ACCORD COUPE V6',class:'STREET / FWD',drive:'FWD',weight:3600,grip:1.0,hp:271,cost:0,color:'#c7f36b',engine:'j35'},
-{id:'civic',name:'1999 Honda Civic Coupe',short:'CIVIC COUPE',class:'LIGHTWEIGHT / FWD',drive:'FWD',weight:2380,grip:.91,hp:106,cost:0,color:'#65d9e8',engine:'b16'},
-{id:'mustang',name:'2018 Ford Mustang GT',short:'MUSTANG GT',class:'MUSCLE / RWD',drive:'RWD',weight:3705,grip:1.08,hp:460,cost:18000,color:'#ff626b',engine:'coyote'},
-{id:'supra',name:'1994 Toyota Supra Turbo',short:'SUPRA TURBO',class:'TUNER / RWD',drive:'RWD',weight:3415,grip:1.04,hp:320,cost:22000,color:'#ff9c61',engine:'2jz'}
-];
-const engines=[
-{id:'j35',name:'3.5L Honda J35 V6',hp:271,weight:0,cost:0,peak:5600,red:6800},
-{id:'b16',name:'1.6L Honda B16 I4',hp:160,weight:-110,cost:2500,peak:7400,red:8200},
-{id:'k20',name:'2.0L Honda K20 I4',hp:220,weight:-50,cost:6500,peak:7600,red:8500},
-{id:'2jz',name:'3.0L Toyota 2JZ-GTE I6',hp:320,weight:120,cost:9000,peak:6000,red:7200},
-{id:'coyote',name:'5.0L Ford Coyote V8',hp:460,weight:180,cost:11000,peak:6500,red:7500},
-{id:'ls',name:'6.2L LS V8',hp:430,weight:100,cost:9500,peak:5800,red:6800}
-];
-const tire={street:{grip:1,cost:0},sport:{grip:1.12,cost:900},drag:{grip:1.3,cost:1800},slick:{grip:1.48,cost:3200}};
-const ratios=[3.25,2.10,1.48,1.12,.86,3.90];const keys=['1st','2nd','3rd','4th','5th','Final'];
-let car=cars[0],engine=engines[0],cash=Number(localStorage.getItem('dynolab-cash')||25000),history=JSON.parse(localStorage.getItem('dynolab-race-history')||'[]'),run=null,raceTimer=null,last=0,gear=1,playerX=0,rivalX=0,done=true,config={induction:'na',ecu:'stock',tire:'street',weight:0,ratios:[...ratios]},raceNum=0;
-function num(n){return Math.round(n).toLocaleString()}
-function current(){
- const boost={na:1,turbo:1.55,super:1.32}[config.induction],ecu={stock:1,street:1.07,race:1.13}[config.ecu];
- const hp=Math.round(engine.hp*boost*ecu),weight=car.weight+engine.weight-config.weight,grip=car.grip*tire[config.tire].grip;
- const cost=(config.induction==='na'?0:config.induction==='turbo'?4500:3800)+(config.ecu==='stock'?0:config.ecu==='street'?1200:3200)+tire[config.tire].cost+config.weight*12;
- const et=5.825*Math.pow(weight/hp,.5)/Math.pow(grip,.12)+3.1;
- return {hp,weight,grip,cost,et};
-}
-function svgCar(color,kind='street'){
- const body=kind==='muscle'?'M35 94 L49 62 Q54 54 83 52 L123 29 Q138 23 174 27 L211 49 L247 59 Q258 62 263 78 L270 94 Z':kind==='tuner'?'M30 94 L46 67 Q55 58 86 56 L119 34 Q128 28 167 31 L211 55 L249 64 Q260 68 266 94 Z':'M28 94 L43 67 Q48 59 78 57 L112 35 Q122 29 165 32 L205 55 L244 64 Q258 68 268 94 Z';
- return '<svg viewBox="0 0 300 130" aria-label="stylized car"><defs><linearGradient id="paint" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+color+'" stop-opacity=".95"/><stop offset="1" stop-color="'+color+'" stop-opacity=".5"/></linearGradient></defs><ellipse cx="150" cy="105" rx="123" ry="10" fill="#000" opacity=".45"/><path d="'+body+'" fill="url(#paint)" stroke="'+color+'" stroke-width="2"/><path d="M87 55 L119 36 Q127 33 162 36 L190 55 Z" fill="#14202a" stroke="#81909d" stroke-width="1.5"/><path d="M126 37 L124 55 M164 37 L172 55" stroke="#81909d"/><path d="M46 75 L76 72 M230 71 L253 76" stroke="#e7edf2" stroke-width="4"/><path d="M38 89 L260 89" stroke="#0b1015" stroke-width="3"/><circle cx="76" cy="94" r="20" fill="#0a0d11" stroke="#697581" stroke-width="4"/><circle cx="76" cy="94" r="9" fill="#a6b0b8"/><circle cx="224" cy="94" r="20" fill="#0a0d11" stroke="#697581" stroke-width="4"/><circle cx="224" cy="94" r="9" fill="#a6b0b8"/><path d="M38 84 L58 82 M243 82 L265 84" stroke="'+color+'" stroke-width="5"/></svg>';
-}
-function renderCars(){
- $g('carSelect').innerHTML=cars.map(c=>'<option value="'+c.id+'">'+c.name+(c.cost?' · '+c.cost.toLocaleString()+' CR':' · OWNED')+'</option>').join('');
- $g('engineSelect').innerHTML=engines.map(e=>'<option value="'+e.id+'">'+e.name+(e.cost?' · '+e.cost.toLocaleString()+' CR':'')+'</option>').join('');
- $g('ratioGrid').innerHTML=keys.map((k,i)=>'<div><label>'+k.toUpperCase()+'</label><input data-ratio="'+i+'" type="number" min=".4" max="6" step=".01" value="'+config.ratios[i].toFixed(2)+'"></div>').join('');
- $g('carSelect').value=car.id;$g('engineSelect').value=engine.id;drawCar();
-}
-function drawCar(){
- const p=current();$g('carArt').innerHTML=svgCar(car.color,car.id==='mustang'?'muscle':car.id==='supra'?'tuner':'street');
- $g('playerCar').innerHTML=svgCar(car.color);$g('rivalCar').innerHTML=svgCar('#ff626b');
- $g('carCaption').textContent=car.short;$g('carClass').textContent=car.class;$g('weightRead').innerHTML=num(p.weight)+' <small>LB</small>';$g('hpRead').innerHTML=num(p.hp)+' <small>HP</small>';$g('driveRead').textContent=car.drive;$g('etRead').innerHTML=p.et.toFixed(2)+' <small>S</small>';$g('cash').textContent=String.fromCharCode(36)+num(cash);$g('gripRead').textContent='GRIP '+p.grip.toFixed(2)+'×';$g('weightTuneRead').textContent=config.weight+' lb removed';$g('boostRead').textContent=config.induction==='na'?'NATURALLY ASPIRATED':config.induction.toUpperCase();$g('playerCar').style.width='110px';
-}
-function loadTune(){config={induction:'na',ecu:'stock',tire:'street',weight:0,ratios:[...ratios]};$g('inductionSelect').value=config.induction;$g('ecuSelect').value=config.ecu;$g('tireSelect').value=config.tire;$g('weightSlider').value=0;renderCars();}
-function buyAndSet(id,kind){
- if(kind==='car'){const target=cars.find(x=>x.id===id);if(target.cost&&!ownedCars().includes(id)){if(cash<target.cost){alert('Not enough credits for this chassis. Run the current car first.');$g('carSelect').value=car.id;return}cash-=target.cost;ownCar(id)}car=target;engine=engines.find(e=>e.id===car.engine)||engines[0];loadTune();}
- else {const target=engines.find(x=>x.id===id);if(target.cost&&cash<target.cost){alert('Not enough credits for this engine swap.');$g('engineSelect').value=engine.id;return}if(target.cost)cash-=target.cost;engine=target;}
- drawCar();localStorage.setItem('dynolab-cash',cash);
-}
-function ownedCars(){return JSON.parse(localStorage.getItem('dynolab-owned-cars')||'["accord","civic"]')}
-function ownCar(id){const a=ownedCars();if(!a.includes(id))a.push(id);localStorage.setItem('dynolab-owned-cars',JSON.stringify(a))}
-function refreshCarOptions(){const owned=ownedCars();[...$g('carSelect').options].forEach(o=>{const c=cars.find(x=>x.id===o.value);o.disabled=false;o.textContent=c.name+(c.cost&&!owned.includes(c.id)?' · LOCKED '+c.cost.toLocaleString()+' CR':'')});}
-function applySetup(){
- const old={...config,ratios:[...config.ratios]};
- config.induction=$g('inductionSelect').value;config.ecu=$g('ecuSelect').value;config.tire=$g('tireSelect').value;config.weight=Number($g('weightSlider').value);
- config.ratios=[...document.querySelectorAll('[data-ratio]')].map((el,i)=>Math.max(.4,Math.min(6,Number(el.value)||ratios[i])));
- const p=current(),setupCost=(config.induction==='na'?0:config.induction==='turbo'?4500:3800)+(config.ecu==='stock'?0:config.ecu==='street'?1200:3200)+tire[config.tire].cost+config.weight*12;
- if(setupCost>cash){config=old;alert('This setup costs '+String.fromCharCode(36)+num(setupCost)+', but your garage only has '+String.fromCharCode(36)+num(cash)+'. Reduce upgrades or win a run first.');return}
- cash-=setupCost;localStorage.setItem('dynolab-cash',cash);localStorage.setItem('dynolab-garage-setup',JSON.stringify({car:car.id,engine:engine.id,config}));drawCar();refreshCarOptions();$g('raceState').textContent='SETUP APPLIED';}
-function startRace(){
- if(!done)return;done=false;raceNum++;run={time:0,distance:0,speed:0,rpm:engine.red*.55,launch:performance.now(),shiftPenalty:0,finish:false,won:false};gear=1;playerX=0;rivalX=0;last=performance.now();$g('launchBtn').textContent='RACING…';$g('launchBtn').disabled=true;$g('upBtn').disabled=false;$g('downBtn').disabled=false;$g('raceState').textContent='LIGHTS GREEN';$g('timeRead').innerHTML='0.00 <small>S</small>';raceTimer=requestAnimationFrame(tick);}
-function tick(now){
- if(done||!run)return;const dt=Math.min(.05,(now-last)/1000||.016);last=now;run.time+=dt;
- const p=current(),rat=config.ratios[gear-1]*config.ratios[5],red=engine.red||7000,peak=engine.peak||6000;
- run.rpm=Math.min(red+500,Math.max(1800,950+run.speed*rat*red/Math.max(1,car.weight/1000)*.006));
- const rpmFactor=run.rpm<peak*.65?.72+(run.rpm/(peak*.65))*.28:Math.max(.55,1-(run.rpm-peak)/(red-peak)*.32);
- const gearFactor=Math.max(.62,1.12-gear*.065),power=p.hp*rpmFactor*gearFactor;
- const traction=Math.min(1.18,p.grip/(1+Math.max(0,p.hp/Math.max(1,p.weight)-.08)*.38));
- const accel=(power/Math.max(1,p.weight))*7.6*traction-run.speed*.008;
- run.speed=Math.max(0,run.speed+accel*dt*2.2);
- if(run.shiftPenalty>0){run.speed=Math.max(0,run.speed-run.shiftPenalty*dt);run.shiftPenalty=Math.max(0,run.shiftPenalty-dt*60)}
- run.distance+=run.speed*.44704*dt; // mph -> m/s
- const rivalSpeed=Math.min(126,(run.time*9.6)+(run.time>2?18:0));rivalX=Math.min(94,run.time*6.4);playerX=Math.min(94,run.distance/402.3*94);
- $g('playerCar').style.left=playerX+'%';$g('rivalCar').style.left=rivalX+'%';$g('speedRead').innerHTML=num(run.speed)+' <small>MPH</small>';$g('rpmRead').innerHTML=num(run.rpm)+' <small>RPM</small>';$g('gearRead').textContent=gear;$g('timeRead').innerHTML=run.time.toFixed(2)+' <small>S</small>';
- if(run.distance>=402.3||run.time>30){finishRace();return}raceTimer=requestAnimationFrame(tick);
-}
-function shift(dir){
- if(done||!run)return;const next=Math.max(1,Math.min(5,gear+dir));if(next===gear)return;
- if(dir>0){const sweet=engine.peak||6000;const quality=1-Math.min(1,Math.abs(run.rpm-sweet)/Math.max(1,engine.red-sweet));run.shiftPenalty=(1-quality)*3+0.2;}
- else run.shiftPenalty=1.2;gear=next;run.rpm=Math.max(2000,run.rpm*(dir>0?.62:1.42));$g('gearRead').textContent=gear;
-}
-function finishRace(){
- done=true;cancelAnimationFrame(raceTimer);const p=current(),et=run.time+(run.distance<402.3?(402.3-run.distance)/Math.max(10,run.speed*.44704):0),rivalTime=12.9+(car.weight/4000)*1.8-(p.hp/500)*1.4;
- const won=et<rivalTime;const reward=won?2500:800;cash+=reward;localStorage.setItem('dynolab-cash',cash);run.won=won;
- history.unshift({car:car.short,hp:p.hp,et:et.toFixed(2),speed:num(run.speed),result:won?'WIN':'LOSS',reward});
- history=history.slice(0,8);localStorage.setItem('dynolab-race-history',JSON.stringify(history));$g('raceState').textContent=won?'RACE WON':'RACE COMPLETE';$g('launchBtn').textContent='RUN IT BACK';$g('launchBtn').disabled=false;$g('upBtn').disabled=true;$g('downBtn').disabled=true;
- $g('raceHistory').innerHTML=history.map(h=>'<div class="history-row"><span>'+h.car+' <span style="color:#778593">· '+h.hp+' HP</span></span><span><b>'+h.et+' S</b></span><span style="color:'+(h.result==='WIN'?'var(--lime)':'var(--orange)')+'">'+h.result+' · '+String.fromCharCode(36)+num(h.reward)+'</span></div>').join('');
- $g('cash').textContent=String.fromCharCode(36)+num(cash);refreshCarOptions();alert((won?'WIN! 🏁':'RUN COMPLETE')+'\nEstimated time: '+et.toFixed(2)+' s\nFinish speed: '+num(run.speed)+' mph\nReward: '+String.fromCharCode(36)+num(reward)+' CR');
-}
-$g('carSelect').onchange=e=>buyAndSet(e.target.value,'car');$g('engineSelect').onchange=e=>buyAndSet(e.target.value,'engine');
-$g('applyTune').onclick=applySetup;$g('resetTune').onclick=()=>{loadTune();drawCar()};
-$g('weightSlider').oninput=e=>{$g('weightTuneRead').textContent=e.target.value+' lb removed'};
-$g('inductionSelect').onchange=drawCar;$g('ecuSelect').onchange=drawCar;$g('tireSelect').onchange=drawCar;
-$g('launchBtn').onclick=startRace;$g('upBtn').onclick=()=>shift(1);$g('downBtn').onclick=()=>shift(-1);
-document.addEventListener('keydown',e=>{if(!document.body.classList.contains('garage-active'))return;if(e.key==='ArrowUp'){e.preventDefault();shift(1)}if(e.key==='ArrowDown'){e.preventDefault();shift(-1)}});
-const saved=JSON.parse(localStorage.getItem('dynolab-garage-setup')||'null');if(saved){car=cars.find(c=>c.id===saved.car)||car;engine=engines.find(e=>e.id===saved.engine)||engine;config={...config,...saved.config};}
-renderCars();$g('inductionSelect').value=config.induction;$g('ecuSelect').value=config.ecu;$g('tireSelect').value=config.tire;$g('weightSlider').value=config.weight;
-refreshCarOptions();$g('raceHistory').innerHTML=history.length?history.map(h=>'<div class="history-row"><span>'+h.car+' <span style="color:#778593">· '+h.hp+' HP</span></span><span><b>'+h.et+' S</b></span><span style="color:'+(h.result==='WIN'?'var(--lime)':'var(--orange)')+'">'+h.result+' · '+String.fromCharCode(36)+num(h.reward)+'</span></div>').join(''):'<div class="history-empty">Your first run is waiting. Tune the car, stage up, and see what the setup can do.</div>';
-drawCar();
-})();
-</script>
-
 </body></html>
