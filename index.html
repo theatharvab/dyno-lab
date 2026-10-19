@@ -147,7 +147,8 @@ function update(dt,now){
  const near=closestTrack(state.pos),trackPoint=near.p;
  carGroup.position.set(state.pos.x,trackPoint.y,state.pos.z);
  carGroup.rotation.y=state.heading-Math.PI/2;
- carGroup.rotation.z=0;
+ const grade=curve.getTangentAt(near.t);
+ carGroup.rotation.z=Math.atan2(grade.y,Math.hypot(grade.x,grade.z));
  // Wheel groups have their axle on local Z; roll around local X in the wheel's own frame.
  wheels.forEach(w=>{w.pivot.rotation.y=w.front?THREE.MathUtils.clamp(state.steer*-.45,-.38,.38):0;w.spin.rotation.z-=state.speed*dt/.34});
  setText('speed',String(Math.round(state.speed*3.6)).padStart(3,'0'));
