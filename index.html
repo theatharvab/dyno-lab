@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0d12">
+<title>DYNO LAB — Engine Development</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+:root{--bg:#090c10;--panel:#11161d;--panel2:#151c24;--line:#27313c;--text:#edf2f7;--muted:#8794a3;--lime:#c7f36b;--cyan:#65d9e8;--orange:#ff9c61;--red:#ff626b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1a2631 0,transparent 55%),var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:13px}button,select,input{font:inherit}button{cursor:pointer}header{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#090c10d9;position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:12px}.mark{width:36px;height:36px;border:1px solid var(--lime);display:grid;place-items:center;color:var(--lime);font-family:'IBM Plex Mono';font-weight:600;transform:skew(-7deg)}.brand strong{font-family:'Barlow Condensed';font-size:23px;letter-spacing:2px}.brand small{display:block;color:var(--muted);font:10px 'IBM Plex Mono';letter-spacing:1.5px;margin-top:2px}.headright{display:flex;align-items:center;gap:18px;color:var(--muted);font:10px 'IBM Plex Mono';letter-spacing:1px}.live{color:var(--lime)}.live:before{content:'';display:inline-block;width:6px;height:6px;background:var(--lime);border-radius:50%;margin-right:8px;box-shadow:0 0 10px #c7f36b80}main{max-width:1500px;margin:auto;padding:24px 28px 50px}.eyebrow{color:var(--lime);font:10px 'IBM Plex Mono';letter-spacing:1.8px;text-transform:uppercase}.title-row{display:flex;align-items:end;justify-content:space-between;margin-bottom:22px;gap:20px}.title-row h1{font:700 clamp(32px,4vw,48px)/.95 'Barlow Condensed';letter-spacing:1px;margin:8px 0 10px}.title-row p{color:var(--muted);margin:0;max-width:600px;line-height:1.6}.pill{border:1px solid var(--line);padding:9px 12px;color:#aeb9c5;font:10px 'IBM Plex Mono';white-space:nowrap}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(330px,.9fr);gap:16px}.panel{background:linear-gradient(145deg,#141a22,#0f141a);border:1px solid var(--line);min-width:0}.panel-head{height:48px;padding:0 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.panel-head h2{font:600 16px 'Barlow Condensed';letter-spacing:1.3px;margin:0;text-transform:uppercase}.tag{font:9px 'IBM Plex Mono';color:var(--muted);border:1px solid #34404b;padding:5px 7px}.engine-stage{height:330px;position:relative;background:radial-gradient(ellipse at 50% 52%,#263540 0,#111820 42%,#0d1218 75%);overflow:hidden}.engine-stage:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 49.8%,#ffffff08 50%,transparent 50.2%),linear-gradient(0deg,transparent 49.8%,#ffffff08 50%,transparent 50.2%);background-size:36px 36px;opacity:.35}.stage-note{position:absolute;z-index:2;left:15px;top:14px;color:#8794a3;font:9px 'IBM Plex Mono';letter-spacing:1px}.stage-note span{color:var(--lime)}#engineCanvas{width:100%;height:100%;display:block;touch-action:pan-y}.stage-footer{position:absolute;bottom:12px;left:14px;right:14px;display:flex;justify-content:space-between;color:#8c9aa8;font:9px 'IBM Plex Mono';pointer-events:none}.engine-controls{display:flex;gap:7px}.small-btn{background:#151d25;border:1px solid #34404b;color:#c8d1db;padding:7px 10px;font:10px 'IBM Plex Mono'}.small-btn:hover,.small-btn.active{border-color:var(--lime);color:var(--lime)}.spec-strip{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}.spec{padding:13px 15px;border-right:1px solid var(--line)}.spec:last-child{border-right:0}.spec label{display:block;color:var(--muted);font:9px 'IBM Plex Mono';letter-spacing:.7px;text-transform:uppercase;margin-bottom:7px}.spec strong{font:600 18px 'Barlow Condensed'}.spec small{font:10px 'IBM Plex Mono';color:var(--muted);margin-left:3px}.build-panel{margin-top:16px}.build-body{padding:16px}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}.field label{display:flex;justify-content:space-between;gap:8px;color:#c3ccd5;margin-bottom:8px;font-size:11px}.field label b{font:11px 'IBM Plex Mono';color:var(--lime)}select{width:100%;background:#0c1117;border:1px solid #303b47;color:var(--text);padding:10px 11px;outline:none}input[type=range]{width:100%;accent-color:var(--lime);margin:5px 0 0}.field .hint{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.4}.build-footer{border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}.btn-primary{background:var(--lime);color:#12180b;border:0;padding:12px 17px;font:700 11px 'IBM Plex Mono';letter-spacing:.5px;text-transform:uppercase}.btn-primary:hover{background:#ddff9b}.btn-secondary{background:transparent;border:1px solid #3a4652;color:#d7dfe7;padding:11px 14px;font:10px 'IBM Plex Mono'}.right-col{display:flex;flex-direction:column;gap:16px}.result-top{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}.bigmetric{background:#11171e;padding:17px}.bigmetric label{font:9px 'IBM Plex Mono';letter-spacing:1px;color:var(--muted);display:block;margin-bottom:10px}.bigmetric strong{font:700 38px/.9 'Barlow Condensed';letter-spacing:.3px}.bigmetric .unit{font:10px 'IBM Plex Mono';color:var(--muted);margin-left:5px}.bigmetric .delta{font:10px 'IBM Plex Mono';color:var(--lime);margin-top:9px}.chart-wrap{padding:10px 13px 13px}#chart{width:100%;height:240px;display:block}.chart-legend{display:flex;gap:17px;font:10px 'IBM Plex Mono';color:var(--muted);padding:2px 4px 8px}.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}.run-controls{padding:14px 16px;border-top:1px solid var(--line);display:flex;gap:9px}.run-controls .btn-primary{flex:1}.telemetry{display:grid;grid-template-columns:1fr 1fr}.telemetry-item{padding:12px 15px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.telemetry-item:nth-child(2n){border-right:0}.telemetry-item:nth-last-child(-n+2){border-bottom:0}.telemetry-item label{font:9px 'IBM Plex Mono';color:var(--muted);display:block;margin-bottom:6px}.telemetry-item strong{font:600 18px 'Barlow Condensed'}.telemetry-item small{color:var(--muted);font:10px 'IBM Plex Mono';margin-left:4px}.history-body{padding:12px 16px}.history-empty{color:var(--muted);line-height:1.6;font-size:11px;padding:6px 0}.history-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;border-bottom:1px solid #27313c;padding:10px 0;font:10px 'IBM Plex Mono'}.history-row:last-child{border-bottom:0}.history-row b{color:var(--lime);font-weight:500}.footer-note{color:#637180;text-align:center;font:9px 'IBM Plex Mono';letter-spacing:.7px;margin-top:22px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:#d3fa83;color:#10170a;padding:12px 17px;font:11px 'IBM Plex Mono';z-index:20;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.disclaimer{font-size:10px;color:#6f7d8b;line-height:1.5;padding:0 16px 14px}.section-kicker{font:9px 'IBM Plex Mono';color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.right-col{display:grid;grid-template-columns:1fr 1fr}.right-col .panel:first-child{grid-column:1/-1}.title-row{align-items:start;flex-direction:column}.engine-stage{height:300px}}
+@media(max-width:600px){header{padding:0 15px;height:64px}.headright{gap:8px}.headright .hide-mobile{display:none}main{padding:19px 12px 35px}.title-row h1{font-size:38px}.right-col{display:flex}.engine-stage{height:250px}.spec{padding:10px 8px}.spec strong{font-size:16px}.spec label{font-size:8px}.field-grid{grid-template-columns:1fr}.build-footer{align-items:stretch;flex-direction:column}.build-footer>div{display:flex;gap:8px}.build-footer button{flex:1}.pill{white-space:normal}.panel-head{padding:0 12px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="mark">DL</div><div><strong>DYNO LAB</strong><small>ENGINE DEVELOPMENT SYSTEM / 001</small></div></div><div class="headright"><span class="live">SYSTEM ONLINE</span><span class="hide-mobile">BUILD 0.1.0</span><span class="hide-mobile">LOCAL SESSION</span></div></header>
+<main>
+<div class="title-row"><div><div class="eyebrow">POWERTRAIN ENGINEERING / WORKSTATION 01</div><h1>BUILD IT. <span style="color:var(--lime)">SPIN IT.</span> MEASURE IT.</h1><p>Develop an engine configuration, predict how it behaves, then put it through a simulated dyno pull. Every change has a trade-off.</p></div><div class="pill">BASE ENGINE: HONDA J35Z2 · 3,471 CC · V6</div></div>
+<div class="layout">
+<div class="left-col">
+<section class="panel"><div class="panel-head"><h2>01 / Engine assembly</h2><div class="engine-controls"><button class="small-btn active" id="viewIso">ISOMETRIC</button><button class="small-btn" id="viewTop">TOP</button><button class="small-btn" id="rotateBtn">⟳ ROTATE</button></div></div>
+<div class="engine-stage"><div class="stage-note">LIVE MODEL VIEW <span>●</span><br>DRAG TO ROTATE / SCROLL TO ZOOM</div><canvas id="engineCanvas"></canvas><div class="stage-footer"><span>J35Z2 / NATURALLY ASPIRATED</span><span id="modelStatus">ASSEMBLY: STOCK</span></div></div>
+<div class="spec-strip"><div class="spec"><label>Displacement</label><strong id="displacement">3.5</strong><small>L</small></div><div class="spec"><label>Compression</label><strong id="compressionRead">10.5</strong><small>:1</small></div><div class="spec"><label>Peak power</label><strong id="powerRead">271</strong><small>HP</small></div><div class="spec"><label>Peak torque</label><strong id="torqueRead">254</strong><small>LB-FT</small></div></div></section>
+<section class="panel build-panel"><div class="panel-head"><h2>02 / Build configuration</h2><span class="tag">EDITABLE PARAMETERS</span></div><div class="build-body"><div class="field-grid">
+<div class="field"><label for="intake">Intake system</label><select id="intake"><option value="stock">OEM intake manifold</option><option value="cold">Cold-air intake</option><option value="long">Long-runner performance</option><option value="short">Short-runner / high RPM</option></select><div class="hint">Changes airflow and the shape of the torque curve.</div></div>
+<div class="field"><label for="exhaust">Exhaust system</label><select id="exhaust"><option value="stock">OEM exhaust</option><option value="sport">Sport exhaust</option><option value="headers">Long-tube headers + exhaust</option></select><div class="hint">Lower restriction can improve high-load breathing.</div></div>
+<div class="field"><label for="cam">Camshaft profile <b id="camVal">STOCK</b></label><input id="cam" type="range" min="0" max="3" step="1" value="0"><div class="hint">More duration favors top-end power, but may soften low-speed torque.</div></div>
+<div class="field"><label for="compression">Compression ratio <b id="compVal">10.5:1</b></label><input id="compression" type="range" min="9.5" max="12.5" step=".1" value="10.5"><div class="hint">Higher compression improves efficiency; fuel and knock limits matter.</div></div>
+<div class="field"><label for="rpm">Rev limit <b id="rpmVal">6,800 RPM</b></label><input id="rpm" type="range" min="6000" max="7600" step="100" value="6800"><div class="hint">Extending RPM only helps if the engine can keep making power.</div></div>
+<div class="field"><label for="fuel">Fuel / calibration</label><select id="fuel"><option value="regular">Pump gas · conservative timing</option><option value="premium" selected>Premium · optimized timing</option><option value="race">High-octane · aggressive timing</option></select><div class="hint">The model includes a simplified knock / calibration penalty.</div></div>
+<div class="field"><label for="boost">Induction</label><select id="boost"><option value="na">Naturally aspirated</option><option value="low">Low-boost supercharger · 5 psi</option><option value="high">Supercharger · 9 psi</option></select><div class="hint">Forced induction raises output and thermal/mechanical stress.</div></div>
+<div class="field"><label for="tune">ECU calibration <b id="tuneVal">0%</b></label><input id="tune" type="range" min="0" max="100" step="5" value="25"><div class="hint">Tune quality can unlock output, with diminishing returns.</div></div>
+</div></div><div class="build-footer"><div><button class="btn-secondary" id="resetBtn">RESET TO STOCK</button><button class="btn-secondary" id="saveBuildBtn">SAVE CONFIG</button></div><button class="btn-primary" id="applyBtn">APPLY BUILD ↗</button></div></section>
+</div>
+<div class="right-col">
+<section class="panel"><div class="panel-head"><h2>03 / Dyno results</h2><span class="tag" id="runTag">AWAITING RUN</span></div><div class="result-top"><div class="bigmetric"><label>PEAK POWER</label><strong id="peakHP">271</strong><span class="unit">HP</span><div class="delta" id="hpDelta">BASELINE ESTIMATE</div></div><div class="bigmetric"><label>PEAK TORQUE</label><strong id="peakTQ">254</strong><span class="unit">LB-FT</span><div class="delta" id="tqDelta">BASELINE ESTIMATE</div></div></div><div class="chart-wrap"><div class="chart-legend"><span><i class="legend-dot" style="background:var(--lime)"></i>HORSEPOWER</span><span><i class="legend-dot" style="background:var(--cyan)"></i>TORQUE</span></div><canvas id="chart"></canvas></div><div class="run-controls"><button class="btn-primary" id="runBtn">▶ RUN DYNO PULL</button><button class="btn-secondary" id="compareBtn">COMPARE</button></div><div class="disclaimer">Simulation is a simplified educational model, not measured J35Z2 data or an engine-safety tool. Real results depend on hardware, fuel, conditions, and calibration.</div></section>
+<section class="panel"><div class="panel-head"><h2>04 / Run telemetry</h2><span class="tag" id="telemetryStatus">IDLE</span></div><div class="telemetry"><div class="telemetry-item"><label>ENGINE SPEED</label><strong id="telRPM">0</strong><small>RPM</small></div><div class="telemetry-item"><label>THROTTLE</label><strong id="telThrottle">0</strong><small>%</small></div><div class="telemetry-item"><label>EST. BMEP</label><strong id="telBmep">—</strong><small>PSI</small></div><div class="telemetry-item"><label>INDUCTION PRESSURE</label><strong id="telBoost">0.0</strong><small>PSI</small></div><div class="telemetry-item"><label>RELATIVE STRESS</label><strong id="telStress">LOW</strong><small id="stressPct">—</small></div><div class="telemetry-item"><label>EST. AIRFLOW</label><strong id="telAir">—</strong><small>LB/MIN</small></div></div></section>
+<section class="panel"><div class="panel-head"><h2>05 / Run history</h2><button class="small-btn" id="clearHistory">CLEAR</button></div><div class="history-body" id="history"><div class="history-empty">No runs recorded yet. Apply a build and run the dyno to start a comparison log.</div></div></section>
+</div></div><div class="footer-note">DYNO LAB / PERSONAL ENGINEERING SANDBOX / SIMULATED OUTPUTS — NOT FOR REAL-WORLD ENGINE VALIDATION</div></main><div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const defaults={intake:'stock',exhaust:'stock',cam:0,compression:10.5,rpm:6800,fuel:'premium',boost:'na',tune:25};
+let config={...defaults},active=null,history=[],compare=null,rotation=true,drag=null,angle=0.55,tilt=-0.15,zoom=1;
+const camNames=['STOCK','STAGE 1','STAGE 2','STAGE 3'];
+function calc(c){
+ let intake={stock:1,cold:1.025,long:1.045,short:1.055}[c.intake], exhaust={stock:1,sport:1.035,headers:1.065}[c.exhaust];
+ let camFlow=[1,1.025,1.052,1.075][c.cam],camLow=[1,.992,.97,.94][c.cam];
+ let comp=1+(Number(c.compression)-10.5)*.027;
+ let fuel={regular:.978,premium:1,race:1.025}[c.fuel], tune=1+Number(c.tune)/100*.035;
+ let boostPsi={na:0,low:5,high:9}[c.boost],boostMult=1+boostPsi/14.7*.82;
+ let red=Number(c.rpm), tqBase=254*intake*exhaust*camFlow*comp*fuel*tune*boostMult;
+ let points=[],maxHP=0,maxTQ=0,peakHPAt=0,peakTQAt=0;
+ for(let rpm=1800;rpm<=red;rpm+=100){
+  let x=(rpm-1800)/(red-1800);
+  let tqShape=(.78+.28*Math.exp(-Math.pow((rpm-3900)/1900,2))-.11*x);
+  tqShape*=camLow*(1-.10*Math.max(0,x-.76)*3);
+  let hpFactor=1+Math.max(0,rpm-4400)/10000;
+  let tq=tqBase*tqShape;
+  if(rpm>red*.89)tq*=Math.max(.80,1-(rpm-red*.89)/(red*.11)*.20);
+  let hp=tq*rpm/5252;
+  points.push({rpm,hp,tq});
+  if(hp>maxHP){maxHP=hp;peakHPAt=rpm}if(tq>maxTQ){maxTQ=tq;peakTQAt=rpm}
+ }
+ let stress= Math.max(0,(Number(c.compression)-10.5)*7)+boostPsi*3.1+Number(c.tune)*.09+Number(c.rpm-6800)/100*1.8+Number(c.cam)*1.7;
+ return {points,hp:Math.round(maxHP),tq:Math.round(maxTQ),peakHPAt,peakTQAt,stress:Math.round(stress),boostPsi,displacement:3.471};
+}
+function readControls(){return {intake:$('intake').value,exhaust:$('exhaust').value,cam:+$('cam').value,compression:+$('compression').value,rpm:+$('rpm').value,fuel:$('fuel').value,boost:$('boost').value,tune:+$('tune').value}}
+function updateLabels(){ $('camVal').textContent=camNames[config.cam];$('compVal').textContent=Number(config.compression).toFixed(1)+':1';$('rpmVal').textContent=Number(config.rpm).toLocaleString()+' RPM';$('tuneVal').textContent=config.tune+'%';$('compressionRead').textContent=Number(config.compression).toFixed(1);$('modelStatus').textContent='ASSEMBLY: '+(config.boost==='na'?'NA':config.boost==='low'?'5 PSI BOOST':'9 PSI BOOST'); }
+function drawChart(result,second=null){
+ const canvas=$('chart'),rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.max(1,rect.width*dpr);canvas.height=Math.max(1,rect.height*dpr);
+ const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);let w=rect.width,h=rect.height;ctx.clearRect(0,0,w,h);
+ const pad={l:36,r:10,t:13,b:25},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;let maxR=Math.max(config.rpm,second?.config.rpm||0),minR=1800,maxVal=Math.max(350,...result.points.map(p=>p.hp),...(second?second.result.points.map(p=>p.hp):[]))*1.12;
+ const X=r=>pad.l+(r-minR)/(maxR-minR)*cw,Y=v=>pad.t+ch-v/maxVal*ch;
+ ctx.font='9px IBM Plex Mono, monospace';ctx.textAlign='right';ctx.textBaseline='middle';
+ for(let i=0;i<=4;i++){let y=pad.t+ch*i/4;ctx.strokeStyle='#28323d';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillStyle='#788694';ctx.fillText(Math.round(maxVal*(1-i/4)),pad.l-7,y)}
+ ctx.textAlign='center';ctx.textBaseline='top';for(let r=2000;r<=maxR;r+=1000){let x=X(r);ctx.strokeStyle='#222c36';ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,pad.t+ch);ctx.stroke();ctx.fillStyle='#788694';ctx.fillText((r/1000).toFixed(0)+'k',x,h-17)}
+ function line(key,color,data,dash=[]){ctx.beginPath();ctx.setLineDash(dash);ctx.strokeStyle=color;ctx.lineWidth=2;data.forEach((p,i)=>i?ctx.lineTo(X(p.rpm),Y(p[key])):ctx.moveTo(X(p.rpm),Y(p[key])));ctx.stroke();ctx.setLineDash([])}
+ line('hp','#c7f36b',result.points);line('tq','#65d9e8',result.points);
+ if(second){line('hp','#c7f36b',second.result.points,[5,4]);line('tq','#65d9e8',second.result.points,[5,4])}
+}
+function updateResults(result, baseline=false){
+ $('peakHP').textContent=result.hp;$('peakTQ').textContent=result.tq;$('powerRead').textContent=result.hp;$('torqueRead').textContent=result.tq;
+ $('hpDelta').textContent=baseline?'BASELINE ESTIMATE':(result.hp>=271?'+':'')+(result.hp-271)+' HP VS STOCK';
+ $('tqDelta').textContent=baseline?'BASELINE ESTIMATE':(result.tq>=254?'+':'')+(result.tq-254)+' LB-FT VS STOCK';
+ $('telStress').textContent=result.stress<10?'LOW':result.stress<24?'MODERATE':'HIGH';$('stressPct').textContent=result.stress+'/40';$('telBoost').textContent=result.boostPsi.toFixed(1);
+ $('telAir').textContent=(result.hp/10.2).toFixed(1);$('telBmep').textContent=(150.8*result.tq/254).toFixed(0);
+ $('runTag').textContent=baseline?'ESTIMATED BASELINE':'BUILD ESTIMATE';drawChart(result,compare);
+}
+function applyBuild(){config=readControls();active=calc(config);updateLabels();updateResults(active);renderEngine();toast('BUILD APPLIED · MODEL UPDATED');}
+function setControls(c){Object.keys(c).forEach(k=>{if($(k))$(k).value=c[k]})}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2100)}
+function runDyno(){config=readControls();active=calc(config);updateLabels();updateResults(active);$('telemetryStatus').textContent='PULL COMPLETE';$('telThrottle').textContent='100';$('telRPM').textContent=Number(config.rpm).toLocaleString();let entry={name:'RUN '+String(history.length+1).padStart(2,'0'),hp:active.hp,tq:active.tq,config:{...config},result:active,stamp:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})};history.unshift(entry);renderHistory();$('runTag').textContent='RUN COMPLETE';toast('DYNO PULL COMPLETE · '+active.hp+' HP');}
+function renderHistory(){$('history').innerHTML=history.length?history.slice(0,6).map((r,i)=>'<div class="history-row"><span>'+r.name+' <span style="color:#778593">· '+r.stamp+'</span></span><span><b>'+r.hp+' HP</b></span><span>'+r.tq+' LB-FT</span></div>').join(''):'<div class="history-empty">No runs recorded yet. Apply a build and run the dyno to start a comparison log.</div>'}
+$('applyBtn').addEventListener('click',applyBuild);$('runBtn').addEventListener('click',runDyno);
+$('resetBtn').addEventListener('click',()=>{setControls(defaults);config={...defaults};applyBuild();toast('RESTORED FACTORY-STYLE BASELINE')});
+$('saveBuildBtn').addEventListener('click',()=>{localStorage.setItem('dynolab-build',JSON.stringify(readControls()));toast('CONFIG SAVED IN THIS BROWSER')});
+$('compareBtn').addEventListener('click',()=>{if(!history.length){toast('RUN THE DYNO FIRST TO SET A COMPARISON');return}compare=history[0];drawChart(active,compare);toast('DASHED CURVES SHOW '+compare.name)});
+$('clearHistory').addEventListener('click',()=>{history=[];compare=null;renderHistory();drawChart(active);toast('RUN HISTORY CLEARED')});
+['intake','exhaust','cam','compression','rpm','fuel','boost','tune'].forEach(id=>$(id).addEventListener('input',()=>{const c=readControls();$('camVal').textContent=camNames[c.cam];$('compVal').textContent=c.compression.toFixed(1)+':1';$('rpmVal').textContent=c.rpm.toLocaleString()+' RPM';$('tuneVal').textContent=c.tune+'%'}));
+let scene, camera, renderer, engineGroup;
+function init3D(){
+ const canvas=$('engineCanvas');if(!window.THREE){drawFallback(canvas);return}
+ scene=new THREE.Scene();scene.background=new THREE.Color('#111820');
+ camera=new THREE.PerspectiveCamera(36,1,.1,100);camera.position.set(6.5,5.3,7.5);camera.lookAt(0,0,0);
+ renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);renderer.outputColorSpace=THREE.SRGBColorSpace;
+ scene.add(new THREE.HemisphereLight(0xc5e0f5,0x28313b,2));
+ const key=new THREE.DirectionalLight(0xffffff,3.2);key.position.set(5,8,6);scene.add(key);const rim=new THREE.DirectionalLight(0x65d9e8,2);rim.position.set(-6,2,-4);scene.add(rim);
+ const grid=new THREE.GridHelper(12,24,0x344452,0x25323d);grid.position.y=-1.4;scene.add(grid);
+ engineGroup=new THREE.Group();scene.add(engineGroup);renderEngine();resize3D();
+ canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId)});
+ canvas.addEventListener('pointermove',e=>{if(!drag)return;angle+=(e.clientX-drag.x)*.012;tilt=Math.max(-.8,Math.min(.7,tilt+(e.clientY-drag.y)*.008));drag={x:e.clientX,y:e.clientY};engineGroup.rotation.y=angle;engineGroup.rotation.x=tilt});
+ canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
+ canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.7,Math.min(1.5,zoom+(e.deltaY>0?-.05:.05)));camera.position.multiplyScalar(e.deltaY>0?1.06:.94);camera.lookAt(0,0,0)},{passive:false});
+ $('viewIso').onclick=()=>{camera.position.set(6.5,5.3,7.5);camera.lookAt(0,0,0);angle=.55;tilt=-.15;engineGroup.rotation.set(tilt,angle,0);$('viewIso').classList.add('active');$('viewTop').classList.remove('active')};
+ $('viewTop').onclick=()=>{camera.position.set(0,10,.01);camera.lookAt(0,0,0);engineGroup.rotation.set(0,0,0);$('viewTop').classList.add('active');$('viewIso').classList.remove('active')};
+ $('rotateBtn').onclick=()=>{rotation=!rotation;$('rotateBtn').classList.toggle('active',rotation);toast(rotation?'AUTO ROTATION ON':'AUTO ROTATION OFF')};
+ animate();
+}
+function mat(color,metal=0.6,rough=.38){return new THREE.MeshStandardMaterial({color,metalness:metal,roughness:rough})}
+function box(g,x,y,z,sx,sy,sz,m,rx=0,ry=0,rz=0){let o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);o.rotation.set(rx,ry,rz);g.add(o);return o}
+function cyl(g,x,y,z,r1,r2,len,m,rx=0,ry=0,rz=0){let o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,len,16),m);o.position.set(x,y,z);o.rotation.set(rx,ry,rz);g.add(o);return o}
+function renderEngine(){if(!engineGroup)return;while(engineGroup.children.length){let o=engineGroup.children.pop();o.geometry?.dispose();if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material?.dispose()}
+ const alloy=mat('#8d9aa4',.82,.3),dark=mat('#303c46',.7,.36),black=mat('#171e25',.35,.5),rubber=mat('#111519',.05,.8),silver=mat('#bbc4c9',.85,.23),lime=mat('#c7f36b',.45,.28),orange=mat('#e98245',.55,.3);
+ // Lower block, oil pan and crankcase
+ box(engineGroup,0,-.52,0,2.45,.75,1.22,dark);box(engineGroup,0,-.98,0,2.05,.25,1.02,black);
+ box(engineGroup,0,-.12,0,2.28,.38,.94,alloy);
+ // Transverse V banks, bank angle shown as a compact V
+ for(let side of [-1,1]){
+  let bank=box(engineGroup,0,.48,side*.39,2.2,.68,.49,alloy,side*.48,0,0);
+  for(let i=0;i<3;i++){
+   let x=(i-1)*.66;
+   cyl(engineGroup,x,.84,side*.56,.22,.22,.16,dark,Math.PI/2,0,0);
+   cyl(engineGroup,x,.86,side*.62,.15,.15,.07,silver,Math.PI/2,0,0);
+   box(engineGroup,x,.22,side*.42,.42,.22,.43,dark,side*.48,0,0);
+  }
+  box(engineGroup,0,.88,side*.54,2.25,.14,.25,black,side*.48,0,0);
+  for(let i=0;i<3;i++)box(engineGroup,(i-1)*.66,.98,side*.57,.37,.11,.15,orange,side*.48,0,0);
+ }
+ // Front timing cover, pulleys and accessory belt
+ box(engineGroup,-1.3,-.05,0,.24,1.12,1.13,alloy);
+ for(let i=0;i<3;i++){let x=-1.38+i*.12;cyl(engineGroup,x,-.48,-.48,.25,.25,.11,black,0,Math.PI/2,0);cyl(engineGroup,x-.07,-.48,-.48,.16,.16,.12,silver,0,Math.PI/2,0)}
+ // intake manifold and six runners
+ box(engineGroup,.05,.72,0,1.3,.23,.44,black);
+ for(let side of [-1,1])for(let i=0;i<3;i++){let x=(i-1)*.55;let runner=cyl(engineGroup,x,.65,side*.22,.075,.09,.58,silver,.6,0,0);runner.rotation.z=side*.3}
+ box(engineGroup,.12,1.08,0,1.05,.28,.62,config.intake==='short'?orange:dark);
+ // Exhaust banks and runners
+ for(let side of [-1,1])for(let i=0;i<3;i++){let x=(i-1)*.63;let p=cyl(engineGroup,x,.12,side*.78,.07,.09,.65,config.exhaust==='headers'?orange:dark,Math.PI/2,0,0);p.rotation.z=side*.14}
+ // boosted induction cue
+ if(config.boost!=='na'){cyl(engineGroup,1.3,.83,0,.27,.27,.35,orange,0,0,Math.PI/2);cyl(engineGroup,1.5,.83,0,.17,.17,.1,silver,0,0,Math.PI/2)}
+ // visible detail ribs / fasteners
+ for(let side of [-1,1])for(let i=0;i<4;i++)cyl(engineGroup,-.85+i*.5,-.15,side*.61,.045,.045,.06,silver,Math.PI/2,0,0);
+ engineGroup.rotation.set(tilt,angle,0);
+}
+function drawFallback(canvas){const ctx=canvas.getContext('2d');canvas.width=canvas.clientWidth*2;canvas.height=canvas.clientHeight*2;ctx.scale(2,2);ctx.fillStyle='#111820';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);ctx.fillStyle='#c7f36b';ctx.font='14px monospace';ctx.fillText('3D ENGINE VIEW REQUIRES WEBGL',25,40);ctx.fillStyle='#8794a3';ctx.font='11px monospace';ctx.fillText('Use a modern browser with hardware acceleration enabled.',25,62)}
+function resize3D(){if(!renderer||!camera)return;let c=$('engineCanvas');let w=c.clientWidth,h=c.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();drawChart(active,compare)}
+function animate(){requestAnimationFrame(animate);if(renderer&&scene&&camera){if(rotation&&engineGroup&&!drag)engineGroup.rotation.y+=.0025;renderer.render(scene,camera)}}
+window.addEventListener('resize',()=>{resize3D();if(active)drawChart(active,compare)});
+try{let saved=localStorage.getItem('dynolab-build');if(saved)setControls({...defaults,...JSON.parse(saved)})}catch(e){}
+config=readControls();active=calc(config);updateLabels();updateResults(active,true);init3D();
+})();
+</script>
+</body></html>
