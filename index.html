@@ -225,7 +225,7 @@ function num(n){return Math.round(n).toLocaleString()}
 function current(){
  const boost={na:1,turbo:1.55,super:1.32}[config.induction],ecu={stock:1,street:1.07,race:1.13}[config.ecu];
  const hp=Math.round(engine.hp*boost*ecu),weight=car.weight+engine.weight-config.weight,grip=car.grip*tire[config.tire].grip;
- const cost=(config.induction==='na'?0:config.induction==='turbo'?4500:3800)+(config.ecu==='stock'?0:config.ecu==='street'?1200:3200)+tire[config.tire].cost+config.weight*12+(engine.cost||0);
+ const cost=(config.induction==='na'?0:config.induction==='turbo'?4500:3800)+(config.ecu==='stock'?0:config.ecu==='street'?1200:3200)+tire[config.tire].cost+config.weight*12;
  const et=5.825*Math.pow(weight/hp,.5)/Math.pow(grip,.12)+3.1;
  return {hp,weight,grip,cost,et};
 }
@@ -254,10 +254,12 @@ function ownedCars(){return JSON.parse(localStorage.getItem('dynolab-owned-cars'
 function ownCar(id){const a=ownedCars();if(!a.includes(id))a.push(id);localStorage.setItem('dynolab-owned-cars',JSON.stringify(a))}
 function refreshCarOptions(){const owned=ownedCars();[...$g('carSelect').options].forEach(o=>{const c=cars.find(x=>x.id===o.value);o.disabled=!!c.cost&&!owned.includes(c.id);o.textContent=c.name+(o.disabled?' · LOCKED '+c.cost.toLocaleString()+' CR':'')});}
 function applySetup(){
- const p=current();if(p.cost>cash){alert('This setup costs </html>+num(p.cost)+', but your garage only has </html>+num(cash)+'. Reduce upgrades or win a run first.');return}
- cash-=p.cost;config.ratios=[...document.querySelectorAll('[data-ratio]')].map((el,i)=>Math.max(.4,Math.min(6,Number(el.value)||ratios[i])));
+ const old={...config,ratios:[...config.ratios]};
  config.induction=$g('inductionSelect').value;config.ecu=$g('ecuSelect').value;config.tire=$g('tireSelect').value;config.weight=Number($g('weightSlider').value);
- localStorage.setItem('dynolab-cash',cash);localStorage.setItem('dynolab-garage-setup',JSON.stringify({car:car.id,engine:engine.id,config}));drawCar();refreshCarOptions();$g('raceState').textContent='SETUP APPLIED';}
+ config.ratios=[...document.querySelectorAll('[data-ratio]')].map((el,i)=>Math.max(.4,Math.min(6,Number(el.value)||ratios[i])));
+ const p=current(),setupCost=(config.induction==='na'?0:config.induction==='turbo'?4500:3800)+(config.ecu==='stock'?0:config.ecu==='street'?1200:3200)+tire[config.tire].cost+config.weight*12;
+ if(setupCost>cash){config=old;alert('This setup costs '+String.fromCharCode(36)+num(setupCost)+', but your garage only has '+String.fromCharCode(36)+num(cash)+'. Reduce upgrades or win a run first.');return}
+ cash-=setupCost;localStorage.setItem('dynolab-cash',cash);localStorage.setItem('dynolab-garage-setup',JSON.stringify({car:car.id,engine:engine.id,config}));drawCar();refreshCarOptions();$g('raceState').textContent='SETUP APPLIED';}
 function startRace(){
  if(!done)return;done=false;raceNum++;run={time:0,distance:0,speed:0,rpm:engine.red*.55,launch:performance.now(),shiftPenalty:0,finish:false,won:false};gear=1;playerX=0;rivalX=0;last=performance.now();$g('launchBtn').textContent='RACING…';$g('launchBtn').disabled=true;$g('upBtn').disabled=false;$g('downBtn').disabled=false;$g('raceState').textContent='LIGHTS GREEN';$g('timeRead').innerHTML='0.00 <small>S</small>';raceTimer=requestAnimationFrame(tick);}
 function tick(now){
@@ -286,7 +288,7 @@ function finishRace(){
  history.unshift({car:car.short,hp:p.hp,et:et.toFixed(2),speed:num(run.speed),result:won?'WIN':'LOSS',reward});
  history=history.slice(0,8);localStorage.setItem('dynolab-race-history',JSON.stringify(history));$g('raceState').textContent=won?'RACE WON':'RACE COMPLETE';$g('launchBtn').textContent='RUN IT BACK';$g('launchBtn').disabled=false;$g('upBtn').disabled=true;$g('downBtn').disabled=true;
  $g('raceHistory').innerHTML=history.map(h=>'<div class="history-row"><span>'+h.car+' <span style="color:#778593">· '+h.hp+' HP</span></span><span><b>'+h.et+' S</b></span><span style="color:'+(h.result==='WIN'?'var(--lime)':'var(--orange)')+'">'+h.result+' · +</html>+num(h.reward)+'</span></div>').join('');
- $g('cash').textContent='</html>+num(cash);refreshCarOptions();alert((won?'WIN! 🏁':'RUN COMPLETE')+'\nEstimated time: '+et.toFixed(2)+' s\nFinish speed: '+num(run.speed)+' mph\nReward: </html>+num(reward)+' CR');
+ $g('cash').textContent=String.fromCharCode(36)+num(cash);refreshCarOptions();alert((won?'WIN! 🏁':'RUN COMPLETE')+'\nEstimated time: '+et.toFixed(2)+' s\nFinish speed: '+num(run.speed)+' mph\nReward: '+String.fromCharCode(36)+num(reward)+' CR');
 }
 $g('carSelect').onchange=e=>buyAndSet(e.target.value,'car');$g('engineSelect').onchange=e=>buyAndSet(e.target.value,'engine');
 $g('applyTune').onclick=applySetup;$g('resetTune').onclick=()=>{loadTune();drawCar()};
