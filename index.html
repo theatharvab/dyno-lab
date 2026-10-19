@@ -95,16 +95,62 @@ document.querySelectorAll('.swatch').forEach(b=>b.addEventListener('click',()=>{
 const keys={};addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();keys[k]=true;if(k==='r')resetCar();if(k==='enter'&&!state.started)startRun()});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 document.querySelectorAll('[data-key]').forEach(b=>{const k=b.dataset.key;const down=e=>{e.preventDefault();keys[k]=true},up=e=>{e.preventDefault();keys[k]=false};b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointerleave',up);b.addEventListener('pointercancel',up)});
 const clock=new THREE.Clock();
-function update(dt,now){if(state.started&&!state.finished){const gas=keys.w||keys.arrowup||keys.gas,brake=keys.s||keys.arrowdown||keys.brake,left=keys.a||keys.arrowleft||keys.left,right=keys.d||keys.arrowright||keys.right;const max=carDims.top/3.6;const massScale=1280/carDims.mass;let driveFactor=carDims.drive==='AWD'?1.12:carDims.drive==='FWD'?.94:1.0;let powerAccel=(carDims.power*746/Math.max(carDims.mass,1))/Math.max(state.speed,9)*.62;powerAccel=Math.min(powerAccel,7.8)*driveFactor;if(gas)state.speed+=powerAccel*dt;if(brake)state.speed-=13*dt;state.speed-= (state.speed>0?(.75+state.speed*.018):0)*dt;state.speed=Math.max(0,Math.min(max,state.speed));
-const steerInput=(left?1:0)-(right?1:0);const steerLimit=.48/(1+state.speed*.045);const steerTarget=steerInput*steerLimit;state.steer+=(steerTarget-state.steer)*(1-Math.exp(-dt*5.5));const speedMs=state.speed;let yawRate=(speedMs/carDims.wheelbase)*Math.tan(state.steer)*carDims.grip; if(carDims.drive==='FWD'&&gas)yawRate*=.9;if(carDims.drive==='RWD'&&gas&&Math.abs(state.steer)>.22)yawRate*=1.08;state.heading+=yawRate*dt;
-const forward=new THREE.Vector3(Math.sin(state.heading),0,Math.cos(state.heading));state.pos.addScaledVector(forward,speedMs*dt);
-const near=closestTrack(state.pos);if(near.d>roadWidth*.46){state.speed*=Math.pow(near.d>roadWidth*1.15?.15:.62,dt);if(near.d>roadWidth*1.8){state.pos.x+=(near.p.x-state.pos.x)*Math.min(1,dt*1.5);state.pos.z+=(near.p.z-state.pos.z)*Math.min(1,dt*1.5)}}
-const p=curve.getPointAt(near.t);state.pos.y+=(p.y-state.pos.y)*(1-Math.exp(-dt*8));const t=near.t,target=gateTs[state.check];if(state.check<4&&Math.abs(t-target)<.012&&near.d<roadWidth*.7){trackGates[state.check].children.forEach(o=>o.material=mat('#c7f36b'));state.check++;setText('cp',state.check+' / 4')}
-if(state.check===4&&t<.035&&state.prevT>.94&&now-state.lapStart>8000){const ms=now-state.lapStart;state.started=false;state.finished=true;if(state.best===null||ms<state.best){state.best=ms;setText('best',fmt(ms));setText('bestHud',fmt(ms))}const msg=document.querySelector('#message');msg.style.display='block';msg.querySelector('h2').textContent='LAP COMPLETE';msg.querySelector('p').textContent='Lap time: '+fmt(ms)+(ms===state.best?' — personal best!':'')+' Run it back?';document.querySelector('#start').textContent='RUN AGAIN →';setText('lap','DONE')}
-state.prevT=t;setText('timer',fmt(now-state.lapStart))}
-const near=closestTrack(state.pos),trackPoint=near.p;carGroup.position.set(state.pos.x,trackPoint.y-.035, state.pos.z);carGroup.rotation.y=state.heading-Math.PI/2;carGroup.rotation.z=THREE.MathUtils.clamp(state.steer*-.16,-.16,.16);wheels.forEach(w=>{w.rotation.z+=state.speed*dt/0.34});
-setText('speed',String(Math.round(state.speed*3.6)).padStart(3,'0'));
-const forward=new THREE.Vector3(Math.sin(state.heading),0,Math.cos(state.heading));const target=carGroup.position.clone().add(new THREE.Vector3(0,1.05,0)).addScaledVector(forward,4.2);const desired=carGroup.position.clone().addScaledVector(forward,-9.5).add(new THREE.Vector3(0,4.8,0));camera.position.lerp(desired,1-Math.exp(-dt*2.8));camera.lookAt(target)}
+function update(dt,now){
+ if(state.started&&!state.finished){
+  const gas=keys.w||keys.arrowup||keys.gas,brake=keys.s||keys.arrowdown||keys.brake;
+  const left=keys.a||keys.arrowleft||keys.left,right=keys.d||keys.arrowright||keys.right;
+  const max=carDims.top/3.6;
+  // Power-to-weight determines acceleration; AWD launches hardest, FWD has more front-wheel traction limits.
+  const pwrPerKg=carDims.power/carDims.mass;
+  const driveFactor=carDims.drive==='AWD'?1.16:carDims.drive==='FWD'?.82:1.0;
+  const accel=Math.min(7.2, pwrPerKg*18)*driveFactor;
+  if(gas) state.speed+=accel*dt;
+  if(brake) state.speed-= (state.speed>1?15:7)*dt;
+  state.speed-= (state.speed>0 ? .28+state.speed*.012 : 0)*dt;
+  state.speed=THREE.MathUtils.clamp(state.speed,0,max);
+
+  // Distinct handling: short wheelbase cars turn in quickly; long wheelbase cars are calmer.
+  const steerInput=(left?1:0)-(right?1:0);
+  const speedMs=state.speed;
+  const steerLimit=.52/(1+speedMs*.025);
+  const targetSteer=steerInput*steerLimit;
+  state.steer+=(targetSteer-state.steer)*(1-Math.exp(-dt*(carDims.drive==='FWD'?7:5)));
+  let yawRate=(speedMs/carDims.wheelbase)*Math.tan(state.steer)*carDims.grip;
+  if(carDims.drive==='FWD') yawRate*=gas?.78:1.0;
+  if(carDims.drive==='AWD') yawRate*=1.08;
+  if(carDims.drive==='RWD'&&gas&&Math.abs(state.steer)>.16) yawRate*=1.22;
+  state.heading+=yawRate*dt;
+  const forward=new THREE.Vector3(Math.sin(state.heading),0,Math.cos(state.heading));
+  state.pos.addScaledVector(forward,speedMs*dt);
+
+  const near=closestTrack(state.pos);
+  if(near.d>roadWidth*.46){
+   state.speed*=Math.pow(near.d>roadWidth*1.15?.12:.58,dt);
+   if(near.d>roadWidth*1.8){state.pos.x+=(near.p.x-state.pos.x)*Math.min(1,dt*1.5);state.pos.z+=(near.p.z-state.pos.z)*Math.min(1,dt*1.5)}
+  }
+  const p=curve.getPointAt(near.t);
+  state.pos.y+=(p.y-state.pos.y)*(1-Math.exp(-dt*8));
+  const t=near.t,target=gateTs[state.check];
+  if(state.check<4&&Math.abs(t-target)<.012&&near.d<roadWidth*.7){trackGates[state.check].children.forEach(o=>o.material=mat('#c7f36b'));state.check++;setText('cp',state.check+' / 4')}
+  if(state.check===4&&t<.035&&state.prevT>.94&&now-state.lapStart>8000){
+   const ms=now-state.lapStart;state.started=false;state.finished=true;
+   if(state.best===null||ms<state.best){state.best=ms;setText('best',fmt(ms));setText('bestHud',fmt(ms))}
+   const msg=document.querySelector('#message');msg.style.display='block';msg.querySelector('h2').textContent='LAP COMPLETE';msg.querySelector('p').textContent='Lap time: '+fmt(ms)+(ms===state.best?' — personal best!':'')+' Run it back?';document.querySelector('#start').textContent='RUN AGAIN →';setText('lap','DONE')
+  }
+  state.prevT=t;setText('timer',fmt(now-state.lapStart))
+ }
+ const near=closestTrack(state.pos),trackPoint=near.p;
+ carGroup.position.set(state.pos.x,trackPoint.y-.035,state.pos.z);
+ carGroup.rotation.y=state.heading-Math.PI/2;
+ carGroup.rotation.z=THREE.MathUtils.clamp(state.steer*-.16,-.16,.16);
+ // Wheel groups have their axle on local Z; roll around local X in the wheel's own frame.
+ wheels.forEach(w=>{w.rotation.x+=state.speed*dt/0.34});
+ setText('speed',String(Math.round(state.speed*3.6)).padStart(3,'0'));
+ const forward=new THREE.Vector3(Math.sin(state.heading),0,Math.cos(state.heading));
+ const target=carGroup.position.clone().add(new THREE.Vector3(0,1.05,0)).addScaledVector(forward,4.2);
+ const desired=carGroup.position.clone().addScaledVector(forward,-9.5).add(new THREE.Vector3(0,4.8,0));
+ camera.position.lerp(desired,1-Math.exp(-dt*2.8));camera.lookAt(target)
+}
 function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}new ResizeObserver(resize).observe(view);resize();buildTrack('highland');
 function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.035);update(dt,performance.now());renderer.render(scene,camera)}animate();
 </script>
