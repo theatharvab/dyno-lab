@@ -57,7 +57,7 @@ const cabin=new THREE.Mesh(new THREE.BoxGeometry(L*.38,H*.43,W*.72),glass);cabin
 const roof=new THREE.Mesh(new THREE.BoxGeometry(L*.23,.1,W*.68),paint);roof.position.set(-L*.05,1.08+H*.2,0);carGroup.add(roof);
 const bumper=new THREE.Mesh(new THREE.BoxGeometry(.12,.15,W*.56),dark);bumper.position.set(L*.48,.48,0);carGroup.add(bumper);
 for(const z of [-W*.34,W*.34]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(.09,.1,.25),lampMat);lamp.position.set(L*.48,.68,z);carGroup.add(lamp);const tail=new THREE.Mesh(new THREE.BoxGeometry(.09,.1,.28),tailMat);tail.position.set(-L*.48,.62,z);carGroup.add(tail)}
-for(const x of [-L*.31,L*.31])for(const z of [-W*.53,W*.53]){const wh=new THREE.Group();wh.position.set(x,.36,z);const tire=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.22,10),tireMat);tire.rotation.x=Math.PI/2;wh.add(tire);const rim=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.235,8),rimMat);rim.rotation.x=Math.PI/2;wh.add(rim);carGroup.add(wh);wheels.push(wh)}
+for(const x of [-L*.31,L*.31])for(const z of [-W*.53,W*.53]){const pivot=new THREE.Group();pivot.position.set(x,.36,z);const spin=new THREE.Group();const tire=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.22,10),tireMat);tire.rotation.x=Math.PI/2;spin.add(tire);const rim=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.235,8),rimMat);rim.rotation.x=Math.PI/2;spin.add(rim);pivot.add(spin);carGroup.add(pivot);wheels.push({pivot,spin,front:x>0})}
 const spoiler=new THREE.Mesh(new THREE.BoxGeometry(.16,.1,W*.9),dark);spoiler.position.set(-L*.46,.93,0);carGroup.add(spoiler);
 carGroup.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}})}
 buildCar();
@@ -81,7 +81,8 @@ const dashGeo=new THREE.BoxGeometry(.16,.035,1.65);
 for(let i=0;i<Math.floor(divisions/6);i++){const t=i/(Math.floor(divisions/6)),p=curve.getPointAt(t),tan=curve.getTangentAt(t),m=new THREE.Mesh(dashGeo,lineMat);m.position.set(p.x,p.y+.075,p.z);m.rotation.y=Math.atan2(tan.x,tan.z);trackGroup.add(m)}
 trackGates=[];
 gateTs.forEach((t,i)=>{const p=curve.getPointAt(t),tan=curve.getTangentAt(t),group=new THREE.Group();group.position.copy(p);group.position.y+=.12;group.rotation.y=Math.atan2(tan.x,tan.z);const gm=mat(i===0?'#c7f36b':'#e8eff0');for(const x of [-roadWidth*.46,roadWidth*.46]){const post=new THREE.Mesh(new THREE.BoxGeometry(.18,2.5,.18),gm);post.position.set(x,1.25,0);group.add(post)}const bar=new THREE.Mesh(new THREE.BoxGeometry(roadWidth*.92,.18,.18),gm);bar.position.y=2.5;group.add(bar);trackGroup.add(group);trackGates.push(group)});
-for(let i=0;i<160;i++){const t=(i*.61803398875)%1,p=curve.getPointAt(t),tan=curve.getTangentAt(t),side=new THREE.Vector3(-tan.z,0,tan.x).normalize(),sgn=i%2?1:-1,dist=10+Math.abs(Math.sin(i*12.1))*34,x=p.x+side.x*sgn*dist,z=p.z+side.z*sgn*dist,h=2.5+Math.abs(Math.sin(i*3.4))*5;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.16,.24,h*.35,5),trunkMat);trunk.position.set(x,p.y+h*.17,z);trackGroup.add(trunk);const crown=new THREE.Mesh(new THREE.ConeGeometry(1.4+h*.16,h,5),treeMat);crown.position.set(x,p.y+h*.72,z);crown.rotation.y=(i%5)*.45;trackGroup.add(crown)}
+const roadSamples=Array.from({length:361},(_,i)=>curve.getPointAt(i/360));
+ for(let i=0;i<160;i++){const t=(i*.61803398875)%1,p=curve.getPointAt(t),tan=curve.getTangentAt(t),side=new THREE.Vector3(-tan.z,0,tan.x).normalize(),sgn=i%2?1:-1,dist=roadWidth/2+5+Math.abs(Math.sin(i*12.1))*28,x=p.x+side.x*sgn*dist,z=p.z+side.z*sgn*dist,h=2.5+Math.abs(Math.sin(i*3.4))*5;const blocked=roadSamples.some(q=>Math.abs(q.y-p.y)<h+1&&Math.hypot(q.x-x,q.z-z)<roadWidth/2+2.5);if(blocked)continue;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.16,.24,h*.35,5),trunkMat);trunk.position.set(x,p.y+h*.17,z);trackGroup.add(trunk);const crown=new THREE.Mesh(new THREE.ConeGeometry(1.4+h*.16,h,5),treeMat);crown.position.set(x,p.y+h*.72,z);crown.rotation.y=(i%5)*.45;trackGroup.add(crown)}
 for(let i=0;i<85;i++){const t=i/85,p=curve.getPointAt(t),tan=curve.getTangentAt(t),side=new THREE.Vector3(-tan.z,0,tan.x).normalize();for(const s of [-1,1]){const m=new THREE.Mesh(new THREE.BoxGeometry(.65,.32,.55),mat(i%4===0?'#d4d4c6':'#b94e49'));m.position.set(p.x+side.x*s*(roadWidth/2+.45),p.y+.2,p.z+side.z*s*(roadWidth/2+.45));m.rotation.y=Math.atan2(tan.x,tan.z);trackGroup.add(m)}}
 setText('trackName',cfg.name);setText('trackLength',cfg.length);restartLap()}
 function setText(id,v){const el=document.getElementById(id);if(el)el.textContent=v}
@@ -133,7 +134,7 @@ function update(dt,now){
    if(near.d>roadWidth*1.8){state.pos.x+=(near.p.x-state.pos.x)*Math.min(1,dt*1.5);state.pos.z+=(near.p.z-state.pos.z)*Math.min(1,dt*1.5)}
   }
   const p=curve.getPointAt(near.t);
-  state.pos.y+=(p.y-state.pos.y)*(1-Math.exp(-dt*8));
+  state.pos.y=p.y;
   const t=near.t,target=gateTs[state.check];
   if(state.check<4&&Math.abs(t-target)<.012&&near.d<roadWidth*.7){trackGates[state.check].children.forEach(o=>o.material=mat('#c7f36b'));state.check++;setText('cp',state.check+' / 4')}
   if(state.check===4&&t<.035&&state.prevT>.94&&now-state.lapStart>8000){
@@ -144,11 +145,11 @@ function update(dt,now){
   state.prevT=t;setText('timer',fmt(now-state.lapStart))
  }
  const near=closestTrack(state.pos),trackPoint=near.p;
- carGroup.position.set(state.pos.x,trackPoint.y-.035,state.pos.z);
+ carGroup.position.set(state.pos.x,trackPoint.y,state.pos.z);
  carGroup.rotation.y=state.heading-Math.PI/2;
- carGroup.rotation.z=THREE.MathUtils.clamp(state.steer*-.16,-.16,.16);
+ carGroup.rotation.z=0;
  // Wheel groups have their axle on local Z; roll around local X in the wheel's own frame.
- wheels.forEach(w=>{w.rotation.x+=state.speed*dt/0.34});
+ wheels.forEach(w=>{w.pivot.rotation.y=w.front?THREE.MathUtils.clamp(state.steer*-.45,-.38,.38):0;w.spin.rotation.z-=state.speed*dt/.34});
  setText('speed',String(Math.round(state.speed*3.6)).padStart(3,'0'));
  const forward=new THREE.Vector3(Math.sin(state.heading),0,Math.cos(state.heading));
  const target=carGroup.position.clone().add(new THREE.Vector3(0,1.05,0)).addScaledVector(forward,4.2);
