@@ -47,7 +47,8 @@ let carDims={name:'VECTOR GT',length:4.2,width:1.85,height:1.05,power:320,mass:1
 const carPresets={
  coupe:{name:'VECTOR GT',length:4.2,width:1.85,height:1.05,power:320,mass:1280,top:220,drive:'RWD',wheelbase:2.55,grip:1.0},
  rally:{name:'RIDGELINE',length:3.8,width:1.8,height:1.16,power:275,mass:1190,top:195,drive:'AWD',wheelbase:2.35,grip:1.24},
- prototype:{name:'ARX-01',length:4.7,width:2.05,height:.85,power:510,mass:920,top:270,drive:'RWD',wheelbase:2.8,grip:1.32},\n fwd:{name:'METRO S',length:3.85,width:1.78,height:1.12,power:185,mass:1080,top:185,drive:'FWD',wheelbase:2.42,grip:.94}
+ prototype:{name:'ARX-01',length:4.7,width:2.05,height:.85,power:510,mass:920,top:270,drive:'RWD',wheelbase:2.8,grip:1.32},
+ fwd:{name:'METRO S',length:3.85,width:1.78,height:1.12,power:185,mass:1080,top:185,drive:'FWD',wheelbase:2.42,grip:.94}
 };
 function buildCar(){while(carGroup.children.length)carGroup.remove(carGroup.children[0]);wheels=[];const L=carDims.length,W=carDims.width,H=carDims.height,paint=mat(carColor,.65);
 const base=new THREE.Mesh(new THREE.BoxGeometry(L*.94,H*.42,W),paint);base.position.y=.55+H*.18;carGroup.add(base);
