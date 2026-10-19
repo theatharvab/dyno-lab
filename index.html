@@ -252,7 +252,7 @@ function buyAndSet(id,kind){
 }
 function ownedCars(){return JSON.parse(localStorage.getItem('dynolab-owned-cars')||'["accord","civic"]')}
 function ownCar(id){const a=ownedCars();if(!a.includes(id))a.push(id);localStorage.setItem('dynolab-owned-cars',JSON.stringify(a))}
-function refreshCarOptions(){const owned=ownedCars();[...$g('carSelect').options].forEach(o=>{const c=cars.find(x=>x.id===o.value);o.disabled=!!c.cost&&!owned.includes(c.id);o.textContent=c.name+(o.disabled?' · LOCKED '+c.cost.toLocaleString()+' CR':'')});}
+function refreshCarOptions(){const owned=ownedCars();[...$g('carSelect').options].forEach(o=>{const c=cars.find(x=>x.id===o.value);o.disabled=false;o.textContent=c.name+(c.cost&&!owned.includes(c.id)?' · LOCKED '+c.cost.toLocaleString()+' CR':'')});}
 function applySetup(){
  const old={...config,ratios:[...config.ratios]};
  config.induction=$g('inductionSelect').value;config.ecu=$g('ecuSelect').value;config.tire=$g('tireSelect').value;config.weight=Number($g('weightSlider').value);
